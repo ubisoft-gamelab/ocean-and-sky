@@ -37,6 +37,7 @@ or make it more difficult for avoid enemies.
 
 ### **System Loop**
 * Loop consists of day and night cycles, and natural weather transitions.
+* Evolutionary progression -> Game becomes more and more difficult, and there will be more violent weather patterns/enemies as the game progresses.
 
 ### **Checkpoint System**
 * Perhaps after leaving a storm, or making it past a series of obstacles/enemies, a checkpoint will be reached.
