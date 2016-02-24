@@ -3,65 +3,90 @@ using System.Collections;
 
 public class MovePlayer : MonoBehaviour
 {
+    public enum PlayerType { Sky, Ocean};
 
-    public KeyCode forward;
-    public KeyCode backwards;
+    public PlayerType playerType;
+
+
+    public string xMove;
+    public string zMove;
     public KeyCode up;
     public KeyCode down;
-    public KeyCode left;
-    public KeyCode right;
     public float bounds = 7;
     public GameObject otherPlayer;
-    public float speed = 20;
+    public GameObject plane;
+    public float speed = 15;
 
+
+    private float distance;
     private Rigidbody rb;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        distance = Vector3.Distance(transform.position, otherPlayer.transform.position);
+    }
+
+
+    //A function that finds the speed of the players based on how far they are from each other (The closer they are, the faster)
+    //I just put in a random function but we can change it later
+    void findSpeed()
+    {
+        distance = Vector3.Distance(transform.position, otherPlayer.transform.position);
+        speed = 1000/(Mathf.Pow(distance,1.5f));
     }
 
     void Update()
     {
 
-        if (Input.GetKey(forward))
+        findSpeed();
+        if (distance < 60)
         {
-            transform.Translate(Vector3.forward * Time.deltaTime * speed);
+            transform.Translate(Vector3.forward * Input.GetAxis(zMove) * Time.deltaTime * speed);
+            transform.Translate(new Vector3(1, 0, 0) * Input.GetAxis(xMove) * Time.deltaTime * speed);
+
+
+            if (Input.GetKey(up))
+            {
+                transform.Translate(Vector3.up * Time.deltaTime * speed);
+            }
+
+            if (Input.GetKey(down))
+            {
+                transform.Translate(Vector3.down * Time.deltaTime * speed);
+            }
+        }
+        else
+        {
+            dead();
         }
 
-        if (Input.GetKey(left))
+
+
+        //the water bounds
+        if(playerType == PlayerType.Ocean)
         {
-            transform.Translate(Vector3.left * Time.deltaTime * speed);
+            rb.position = new Vector3
+            (
+              rb.position.x,
+              Mathf.Clamp(rb.position.y, -5000, plane.transform.position.y - 3),
+              rb.position.z
+            );
         }
-
-        if (Input.GetKey(right))
+        else
         {
-            transform.Translate(Vector3.right * Time.deltaTime * speed);
-
+            rb.position = new Vector3
+            (
+              rb.position.x,
+              Mathf.Clamp(rb.position.y, plane.transform.position.y + 3, 5000),
+              rb.position.z
+            );
         }
-
-        if (Input.GetKey(backwards))
-        {
-            transform.Translate(Vector3.back * Time.deltaTime * speed);
-        }
-
-        if (Input.GetKey(up))
-        {
-            transform.Translate(Vector3.up * Time.deltaTime * speed);
-        }
-
-        if (Input.GetKey(down))
-        {
-            transform.Translate(Vector3.down * Time.deltaTime * speed);
-        }
-
-        rb.position = new Vector3
-        (
-            Mathf.Clamp(rb.position.x, otherPlayer.transform.position.x - bounds, otherPlayer.transform.position.x + bounds),
-            Mathf.Clamp(rb.position.y, otherPlayer.transform.position.y - bounds, otherPlayer.transform.position.y + bounds),
-            Mathf.Clamp(rb.position.z, otherPlayer.transform.position.z - bounds, otherPlayer.transform.position.z + bounds)
-        );
-
-    }
-
+    
 }
+    void dead()
+    {
+        Debug.Log("This is where the player dies");
+    }
+} 
+
