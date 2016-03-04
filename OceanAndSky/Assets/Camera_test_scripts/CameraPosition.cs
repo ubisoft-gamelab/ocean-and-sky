@@ -63,8 +63,7 @@ public class CameraPosition : MonoBehaviour
         float xMove = moveInDirection(p1RelPos.x, p2RelPos.x, transform.position.x, player1.transform.position.x, player2.transform.position.x, player1LastPos.x, player2LastPos.x, camRelposX);
         float yMove = moveInDirection(p1RelPos.y, p2RelPos.y, transform.position.y, player1.transform.position.y, player2.transform.position.y, player1LastPos.y, player2LastPos.y, camRelposY);
         float zMove = Zoom(p1RelPos, p2RelPos, transform.position, player1.transform.position, player2.transform.position);
-        transform.position = Vector3.Lerp(transform.position, new Vector3(xMove, yMove, transform.position.z), Time.deltaTime*10);
-        transform.position = Vector3.Lerp(transform.position, new Vector3(xMove, yMove, zMove), Time.deltaTime);
+        transform.position = Vector3.Lerp(transform.position, new Vector3(xMove, yMove, transform.position.z), Time.deltaTime * 20);
         player2LastPos = player2.transform.position;
         player1LastPos = player1.transform.position;
     }

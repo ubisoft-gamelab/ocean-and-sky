@@ -1,14 +1,8 @@
-﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Temp/Compiled-ZeldaWaterV2.shader">
+﻿<Properties StartupItem="Assembly-CSharp.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.AndroidPlayer" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Camera_test_scripts\CameraPosition.cs">
     <Files>
-      <File FileName="Assets/Standard Assets/Environment/Water/Water/Scripts/Water.cs" Line="54" Column="29" />
-      <File FileName="Assets/cameraMove.cs" Line="1" Column="1" />
-      <File FileName="Assets/AnimatedUVs.cs" Line="1" Column="1" />
-      <File FileName="Assets/Standard Assets/Environment/Water (Basic)/Shaders/FXWaterBasic.shader" Line="1" Column="1" />
-      <File FileName="Assets/Standard Assets/Environment/Water/Water/Shaders/FXWaterPro.shader" Line="1" Column="1" />
-      <File FileName="Assets/Shaders/ZeldaWaterV2.shader" Line="24" Column="1" />
-      <File FileName="Temp/Compiled-ZeldaWaterV2.shader" Line="1" Column="1" />
+      <File FileName="Assets\Camera_test_scripts\CameraPosition.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
