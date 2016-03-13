@@ -13,6 +13,7 @@ public class Player : MonoBehaviour {
 	 * True only in the beginning or if the Burden is thrown, and no one catches it.
 	 */
 	public bool isNeither;
+    public float speed;
 
 	public Player otherPlayer;
 	public Burden burden;
@@ -26,6 +27,7 @@ public class Player : MonoBehaviour {
 	public KeyCode downInput;
 	public KeyCode leftInput;
 	public KeyCode rightInput;
+	public KeyCode accelerateInput;
 	public KeyCode catchInput;
 	public KeyCode throwInput;
 
@@ -112,8 +114,6 @@ public class Player : MonoBehaviour {
 			gravity ();
 		}
 
-	
-
 		/**
 		 * If collisionPenalty is >= 10
 		 * Then set maxPenalty to true
@@ -136,7 +136,7 @@ public class Player : MonoBehaviour {
 		/** Check when upInput is pressed **/
 		if (Input.GetKey(upInput)) 
 		{ 
-			transform.Translate(Vector3.right * Time.deltaTime * 80); 
+			transform.Translate(Vector3.right * Time.deltaTime * speed); 
 		}
 		
 		/** Check when downInput is pressed **/
@@ -144,20 +144,20 @@ public class Player : MonoBehaviour {
 		{ 
 			if ( !(transform.position.y < minHeight))
 			{
-				transform.Translate(Vector3.left * Time.deltaTime * 80);
+				transform.Translate(Vector3.left * Time.deltaTime * speed);
 			}
 		}
 		
 		/** Check when leftInput is pressed **/
 		if (Input.GetKey(leftInput)) 
 		{ 
-			transform.Translate(Vector3.back * Time.deltaTime * 80);
+			transform.Translate(Vector3.back * Time.deltaTime * speed);
 		}
 		
 
 		/** Check when rightInput is pressed **/
 		if (Input.GetKey(rightInput)) { 
-			transform.Translate(Vector3.forward * Time.deltaTime * 80); 
+			transform.Translate(Vector3.forward * Time.deltaTime * speed); 
 		}
 
 		/** Check when catchInput is pressed, and if the Player is within range of Burden **/
