@@ -20,11 +20,16 @@ public class PlaneBehaviour : MonoBehaviour {
 
 	/** Motion Values **/
 	float maxVelocity;
+    float currentVelocity;
+    public float startingVelocity;
+    public float increaseAmount;
 	bool isMaxVelocity;
 
 	/** Game Logic Variables **/
 	bool hasCollided;
 
+    /** Timing Variables **/
+    float lastIncreaseTime;
 
 	/** All Methods in file **/
 	//public void leavePlane ()
@@ -45,16 +50,14 @@ public class PlaneBehaviour : MonoBehaviour {
 		planeLength = transform.localScale.x;
 
 		/** Set maxVelocity **/
-		maxVelocity = 900f;
+		maxVelocity = startingVelocity;
+        currentVelocity = startingVelocity;
 
 		/** Set isMaxVelocity = false **/
 		isMaxVelocity = false;
 
 		/** Set hasCollided = false **/
 		hasCollided = false;
-
-		InvokeRepeating ("increaseMaxVelocity", 20f, 5f);
-
 	}
 	
 
@@ -95,23 +98,25 @@ public class PlaneBehaviour : MonoBehaviour {
 	 */
 	public void move()
 	{
-		transform.Translate (Vector3.left * Time.deltaTime * maxVelocity);
+		transform.Translate (Vector3.left * Time.deltaTime * currentVelocity);
 
 	}
 	
 
 	/** 
-	 * increments maxVelocity every 5 seconds if Player has not collided in recent time
+	 * increments maxVelocity every 5 seconds if Player has not collided in recent time.
+     * If P1 has a collision penalty, we check if 5 seconds plus the penalty time has passed
+     * since the last time the maxVelocity was increased. If yes, then we increase the maxVelocity
+     * by increaseAmount, set lastIncreaseTime to Time.time, and reset P1.collisionPenalty to 0.
+     * We assume here that all collision penalties are accumulated under the P1 object.
 	 */
-	public void increaseMaxVelocity()
-	{
-		if((P1.collisionPenalty > 0))
-		{
-			return;
-		}
-
-		maxVelocity += 10;
-		Debug.Log("increaseMaxVelocity : maxVelocity Increased");
-	}
+	public void increaseMaxVelocity() {
+        if (Time.time > lastIncreaseTime + 5.0f + P1.collisionPenalty) {
+            maxVelocity += increaseAmount;
+            lastIncreaseTime = Time.time;
+            P1.collisionPenalty = 0;
+            Debug.Log("increaseMaxVelocity : maxVelocity Increased");
+        }
+    }
 
 }
