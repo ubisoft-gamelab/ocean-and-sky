@@ -1,0 +1,14 @@
+Important & Urgent
+-----
+[ ] Accelerate to max velocity when R-trigger is held. Reduces to max constant velocity when nothing is held.
+
+Not Important & Urgent
+-----
+[x] Max velocity increases every 5 seconds. If fault occurs, then 1 second penalty is added to the timer with a max of 10s possible in the
+penalty counter. On max vel. increase, the penalty counter resets.
+
+Important & Not Urgent
+-----
+The following are the ones that I can implement because it would be convenient.
+[ ] Implement slipstreaming logic
+[ ] Implement braking
