@@ -24,6 +24,7 @@ public class PlaneBehaviour : MonoBehaviour {
     public float startingVelocity;
     public float maxVelocityIncreaseAmount;
     public float acceleration;
+    float minVelocity;
 	bool isMaxVelocity;
 
 	/** Game Logic Variables **/
@@ -71,12 +72,16 @@ public class PlaneBehaviour : MonoBehaviour {
 		if (hasExited) { popForward (); }
 
         increaseMaxVelocity();
+        
+        Mathf.Clamp(currentVelocity, 0.0f, maxVelocity); // Keep speed between max and min velocity.
 	}
 
 
     public void accelerate() {
         currentVelocity += acceleration * Time.deltaTime;
-        Mathf.Clamp(currentVelocity, 0.0f, maxVelocity);
+    }
+    public void decelerate() {
+        currentVelocity -= acceleration * Time.deltaTime;
     }
 	
 

@@ -173,6 +173,11 @@ public class Player : MonoBehaviour {
             foreach (GameObject plane in planes) {
                 plane.GetComponent<PlaneBehaviour>().accelerate();
             }
+        } else {
+            GameObject[] planes = GameObject.FindGameObjectsWithTag("Plane");
+            foreach (GameObject plane in planes) {
+                plane.GetComponent<PlaneBehaviour>().decelerate();
+            }
         }
 
 		/** Check when throwInput is pressed, and if the Player is currently in possession of the Burden **/
