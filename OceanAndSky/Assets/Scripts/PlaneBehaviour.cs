@@ -25,10 +25,10 @@ public class PlaneBehaviour : MonoBehaviour {
     public float maxVelocityIncreaseAmount;
     public float acceleration;
     float minVelocity;
-	bool isMaxVelocity;
+bool isMaxVelocity;
 
-	/** Game Logic Variables **/
-	bool hasCollided;
+/** Game Logic Variables **/
+bool hasCollided;
 
     /** Timing Variables **/
     float lastIncreaseTime;
