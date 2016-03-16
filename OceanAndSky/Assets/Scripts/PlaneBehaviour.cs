@@ -22,7 +22,8 @@ public class PlaneBehaviour : MonoBehaviour {
 	float maxVelocity;
     float currentVelocity;
     public float startingVelocity;
-    public float increaseAmount;
+    public float maxVelocityIncreaseAmount;
+    public float acceleration;
 	bool isMaxVelocity;
 
 	/** Game Logic Variables **/
@@ -69,16 +70,20 @@ public class PlaneBehaviour : MonoBehaviour {
 		/** If we have exited the Box Collider, then pop the Plane Forward **/
 		if (hasExited) { popForward (); }
 
-
+        increaseMaxVelocity();
 	}
 
+
+    public void accelerate() {
+        currentVelocity += acceleration * Time.deltaTime;
+        Mathf.Clamp(currentVelocity, 0.0f, maxVelocity);
+    }
 	
 
 	/** Called when the Player has left the plane's box collider **/
 	public void leavePlane()
 	{
 		currentPosition = transform.position;
-		Debug.Log("planeLength is: " + planeLength);
 		hasExited = true;
 	}
 
@@ -107,15 +112,15 @@ public class PlaneBehaviour : MonoBehaviour {
 	 * increments maxVelocity every 5 seconds if Player has not collided in recent time.
      * If P1 has a collision penalty, we check if 5 seconds plus the penalty time has passed
      * since the last time the maxVelocity was increased. If yes, then we increase the maxVelocity
-     * by increaseAmount, set lastIncreaseTime to Time.time, and reset P1.collisionPenalty to 0.
+     * by maxVelocityIncreaseAmount, set lastIncreaseTime to Time.time, and reset P1.collisionPenalty to 0.
      * We assume here that all collision penalties are accumulated under the P1 object.
 	 */
 	public void increaseMaxVelocity() {
         if (Time.time > lastIncreaseTime + 5.0f + P1.collisionPenalty) {
-            maxVelocity += increaseAmount;
+            maxVelocity += maxVelocityIncreaseAmount;
             lastIncreaseTime = Time.time;
             P1.collisionPenalty = 0;
-            Debug.Log("increaseMaxVelocity : maxVelocity Increased");
+            Debug.Log("increaseMaxVelocity : maxVelocity is now " + maxVelocity);
         }
     }
 

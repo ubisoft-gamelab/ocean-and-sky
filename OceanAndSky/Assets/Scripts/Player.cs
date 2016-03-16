@@ -168,6 +168,13 @@ public class Player : MonoBehaviour {
 			otherPlayer.isNeither = false;
 		}
 
+        if (Input.GetKeyDown(accelerateInput)) {
+            GameObject[] planes = GameObject.FindGameObjectsWithTag("Plane");
+            foreach (GameObject plane in planes) {
+                plane.GetComponent<PlaneBehaviour>().accelerate();
+            }
+        }
+
 		/** Check when throwInput is pressed, and if the Player is currently in possession of the Burden **/
 		if (Input.GetKeyDown(throwInput) && isBearer && otherPlayer.isEscort && canThrow)
 		{
@@ -281,7 +288,6 @@ public class Player : MonoBehaviour {
 
 	void catchBurden()
 	{
-
 		burden.gameObject.transform.parent = this.transform;
 		burden.inPossession ();
 		isBearer = true;
@@ -289,7 +295,6 @@ public class Player : MonoBehaviour {
 		canCatch = false;
 		otherPlayer.isEscort = true;
 		otherPlayer.activateChild ();
-
 	}
 
 	void throwBurden()
