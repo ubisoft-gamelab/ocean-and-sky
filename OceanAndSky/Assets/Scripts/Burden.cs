@@ -1,41 +1,43 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/*
+ * Class which handles when Burden is Thrown by Player.
+ * Keeps track of when Burden is - or is not - in possession
+ * Burden becomes child of the Player which bears it.
+ */
 public class Burden : MonoBehaviour {
 
-	Player P1;
-	Player P2;
-	
+	public Player P1;
+	public Player P2;
+
+	public GameWall gameWall; 
+
 	Vector3 parentPosition;
 	Vector3 restPosition;
 
-	public float forwardForce;
-	public float upForce;
+	float forwardForce;
+	float upForce;
 
-	bool isGrounded;
-	public bool isHeld;
-	public bool isThrown;
-	public bool isAtRest;
+	bool isHeld;
+	bool isThrown;
+	bool isAtRest;
 
-	public int minHeight;
-
+	int minHeight;
 	int weight;
 
-	Vector3 currentPosition;
 
 	// Use this for initialization
 	void Start () {
 
-		currentPosition = transform.position;
-		isAtRest = true;
 
 		weight = 25;
 		minHeight = 30;
-	
+
 		isHeld = false;
+		isAtRest = true; //isAtRest when Burden returns to minHeight
 
-
-		forwardForce = 290f;
+		forwardForce = 250f;
 		upForce = 150f;
 
 	}
@@ -45,9 +47,10 @@ public class Burden : MonoBehaviour {
 	
 		gravity ();
 
+		// TODO Implement cleaner, more reliable way to throw the Burden
 		if (isThrown) 
 		{
-			throwBurden ();
+			thrown ();
 			forwardForce -= 5;
 			upForce -= 5;
 		}
@@ -57,25 +60,29 @@ public class Burden : MonoBehaviour {
 	
 	void gravity()
 	{
-		if (isHeld) 
-		{
-			return;
-		}
+		//Do not apply gravity if isHeld by Player
+		if (isHeld) return;
 
-
+		//If Position less than minHeight, restore to minHeight. Set isAtRest to true. Return
 		if ( transform.position.y <= minHeight) 
 		{
 			transform.position = new Vector3(transform.position.x, minHeight, transform.position.z);
 			isAtRest = true;
+
+			//Make both Players isNeither again
+			P1.resetPlayerType ();
+			P2.resetPlayerType ();
+
 			return;
 		}
 
+		//Slowly pull Burden downwards based on weight
 		transform.Translate (Vector3.down * Time.deltaTime * weight);
 	}
 
 	/*
 	 * If inPossesion, then set isHeld = true
-	 * and also make the Sphere trigger collider inactive
+	 * Make the Sphere trigger collider inactive
 	 */
 	public void inPossession()
 	{
@@ -84,32 +91,58 @@ public class Burden : MonoBehaviour {
 
 		GetComponent<SphereCollider> ().enabled = false;
 		parentPosition = gameObject.transform.parent.position;
+
+		//Move Burden to slightly behind parent
 		transform.position = new Vector3 (parentPosition.x-40, parentPosition.y, parentPosition.z);
 	}
 
+	/*
+	 * If notInPossession, set isHeld to false
+	 * Set sphere collider to true
+	 * Set isAtRest to false
+	 */
 	public void notInPossession()
 	{
 		isHeld = false;
 		GetComponent<SphereCollider> ().enabled = true;
-		isThrown = true;
 		isAtRest = false;
 
 	}
 
-	/* Force which propels Burden forwards when the throwInput is pressed */
-	void throwBurden()
+	// Force that propels Burden forwards when throwInput is pressed 
+	public void thrown()
 	{
-		if (isHeld || ( forwardForce <= 0 && upForce <= 0)) 
+
+		//Will not apply Throw force if Held, AtRest or Forward and Up forces have reached 0
+		if (isHeld || isAtRest || ( forwardForce <= 0 && upForce <= 0)) 
 		{
-			forwardForce = 290f;
+			forwardForce = 250f;
 			upForce = 150f;
 			isThrown = false;
 			return;
 		}
 
+
+		//Simulates Parabola Arc of being thrown. Applies a weakening upward and forward force
 		transform.Translate (Vector3.up * Time.deltaTime * upForce);
 		transform.Translate(Vector3.right * Time.deltaTime * forwardForce);
+
 	}
 
+	void aiAgent()
+	{
+		//TODO Have Burden dynamically interact with Players depending on exactly which Stage Part is coming next
+	}
 
+	//Getter for isAtRest
+	public bool isResting()
+	{
+		return isAtRest;
+	}
+
+	//Setter for isThrown
+	public void setThrown()
+	{
+		isThrown = true;
+	}
 }
