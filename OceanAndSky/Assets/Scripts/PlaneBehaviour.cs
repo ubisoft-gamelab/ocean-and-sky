@@ -3,115 +3,97 @@ using System.Collections;
 
 /**
  * Class which moves Planes forwards to give the impression of motion in the game state.
- * When a plane moves out of viewing - behind the player camera - it will be snapped back into
+ * When a plane moves out of viewing behind the player camera, it will be snapped back into
  * a position in front of the camera to be looped again.
  * 
- * MaxVelocity exists in this class, because 'velocity' here is simply the rate at which the planes loop.
+ * MaxVelocity exists in this class. MaxVelocity increases incrementally throughout gameplay.
+ * MaxVelocity never goes down.
  */
 public class PlaneBehaviour : MonoBehaviour {
-
+	
 	public Player P1;
 	public Player P2;
 
-	/** Translation Values **/
-	bool hasExited;
-	Vector3 currentPosition;
-	float planeLength;
+	public Burden burden;
 
-	/** Motion Values **/
-	float maxVelocity;
+	bool hasExited;
+	bool hasCollided;
 	bool isMaxVelocity;
 
-	/** Game Logic Variables **/
-	bool hasCollided;
+	Vector3 currentPosition;
 
+	float planeLength;
+	float maxVelocity;
+	float resetPosition;
 
-	/** All Methods in file **/
-	//public void leavePlane ()
-	//void popForward()
-	//public void move()
-	//public void accelerate()
-	//public void decelerate();
-	//public float getSpeed();
-	//public void setSpeedChanged
-	//public void increaseMaxVelocity();
-
-	void Start () {
-
-		/** Set hasLeft = false in the beginning. Will be modified onTriggerExit **/
-		hasExited = false;
-
-		/** Get Length of Plane to be used in moving the Plane forwards **/
-		planeLength = transform.localScale.x;
-
-		/** Set maxVelocity **/
-		maxVelocity = 900f;
-
-		/** Set isMaxVelocity = false **/
-		isMaxVelocity = false;
-
-		/** Set hasCollided = false **/
-		hasCollided = false;
-
-		InvokeRepeating ("increaseMaxVelocity", 20f, 5f);
-
-	}
 	
+	void Start () {
+		
+		maxVelocity = 900f;
+		resetPosition = 3250f;
 
+		currentPosition = transform.position;
 
+		// Call increaseMaxVelocity() on the first second of gameplay, and every five seconds after.
+		InvokeRepeating ("increaseMaxVelocity", 1f, 5f);
+		
+	}
+		
 	void Update () {
+
 		/** Constantly move the plane forward **/
 		move ();
-
-		/** If we have exited the Box Collider, then pop the Plane Forward **/
-		if (hasExited) { popForward (); }
-
-
 	}
-
 	
-
-	/** Called when the Player has left the plane's box collider **/
-	public void leavePlane()
-	{
-		currentPosition = transform.position;
-		Debug.Log("planeLength is: " + planeLength);
-		hasExited = true;
-	}
-
 	/** 
-	 * Pops the Plane forward by 755 units on the X-axis, after Player has left the 
+	 * Pops the Plane forward on the X-axis to the resetPosition, after Player has left the 
 	 * Plane's box collider
 	 */ 
 	void popForward()
 	{
-		transform.position = new Vector3(2030, currentPosition.y, currentPosition.z);
-		hasExited = false;
+		transform.position = new Vector3(resetPosition, currentPosition.y, currentPosition.z);
 	}
 
-	/**
-	 * Moves the Plane forward incrementally by every frame
-	 * This is to create the illusion of movement
-	 */
+	 // Moves the Plane forward incrementally by every frame
 	public void move()
 	{
 		transform.Translate (Vector3.left * Time.deltaTime * maxVelocity);
-
 	}
-	
 
 	/** 
 	 * increments maxVelocity every 5 seconds if Player has not collided in recent time
+	 * And if the Burden is being held by a Player
 	 */
 	public void increaseMaxVelocity()
 	{
-		if((P1.collisionPenalty > 0))
+		if((P1.getCollisionPenalty() > 0) || P2.getCollisionPenalty() > 0 || burden.isResting())
 		{
 			return;
 		}
 
-		maxVelocity += 10;
-		Debug.Log("increaseMaxVelocity : maxVelocity Increased");
+
+		maxVelocity += 90;
+		Debug.Log ("Velocity Increased");
+
+	}
+
+	public float getMaxVelocity()
+	{
+		return maxVelocity;
+	}
+
+	public void setMaxVelocity (float newValue)
+	{
+		maxVelocity = newValue;
+	}
+
+	//If in contact with gameWall, pop forward
+	void OnTriggerStay(Collider other)
+	{
+		if (other.gameObject.name == "GameWall") 
+		{
+			popForward ();
+		}
 	}
 
 }

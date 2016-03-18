@@ -1,10 +1,12 @@
-﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Burden.cs">
+﻿<Properties StartupItem="Assembly-CSharp.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/SkyBoxCamera.cs">
     <Files>
-      <File FileName="Assets/Scripts/Burden.cs" Line="22" Column="2" />
-      <File FileName="Assets/Scripts/CameraBehaviour.cs" Line="9" Column="1" />
-      <File FileName="Assets/Scripts/PlaneBehaviour.cs" Line="88" Column="40" />
+      <File FileName="Assets/Scripts/Player.cs" Line="158" Column="2" />
+      <File FileName="Assets/Scripts/CameraBehaviour.cs" Line="44" Column="76" />
+      <File FileName="Assets/Scripts/StageFormation.cs" Line="27" Column="6" />
+      <File FileName="Assets/Scripts/Burden.cs" Line="95" Column="20" />
+      <File FileName="Assets/Scripts/SkyBoxCamera.cs" Line="13" Column="63" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
