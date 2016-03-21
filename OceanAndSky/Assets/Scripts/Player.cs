@@ -445,8 +445,13 @@ public class Player : MonoBehaviour {
 		if (other.gameObject.tag == "Obstacle")
 		{
 			addCollisionPenalty();
-		}
+            if (GameObject.Find("Flash(Clone)") == null)
+            {
+                Instantiate(flash);
+            }
+        }
 	}
+    public Flash flash;
 
 	void OnTriggerEnter(Collider other)
 	{
@@ -484,7 +489,6 @@ public class Player : MonoBehaviour {
 				gameWall.setArtefactForce ();
 			}
 		}
-
 
 	}
 
