@@ -51,6 +51,7 @@
      <Compile Include="Assets\Scripts\AnimatedUVs.cs" />
      <Compile Include="Assets\Scripts\Burden.cs" />
      <Compile Include="Assets\Scripts\CameraBehaviour.cs" />
+     <Compile Include="Assets\Scripts\FocalPoint.cs" />
      <Compile Include="Assets\Scripts\GameWall.cs" />
      <Compile Include="Assets\Scripts\Obstacle.cs" />
      <Compile Include="Assets\Scripts\PlaneBehaviour.cs" />

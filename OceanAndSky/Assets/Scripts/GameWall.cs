@@ -13,8 +13,10 @@ public class GameWall : MonoBehaviour {
 	public PlaneBehaviour planeOne;
 	public PlaneBehaviour planeTwo;
 
+	//Transform[] allChildren;
 	public GameObject levelDesignOne;
-	//public GameObject levelDesignTwo;
+	public GameObject levelDesignTwo;
+	//public GameObject levelDesignThree;
 
 
 	public int stagePartIndex;
@@ -51,13 +53,32 @@ public class GameWall : MonoBehaviour {
 		sixthThreshold =;
 		*/
 
-		sectionOne = true;
-		sectionTwo = false;
+		sectionOne = false;
+		sectionTwo = true;
 
-		//Start stageFormations at the first stageFormation of the first LevelDesign
-		stagePartIndex = 0;
-		levelDesignOne.transform.GetChild (stagePartIndex).GetComponent<StageFormation> ().selectedPart = true;
+		//Sets levelDesignOne stageFormations to inactive
+		Transform allChildren1 = levelDesignOne.gameObject.GetComponentInChildren <Transform>();
+		foreach (Transform child in allChildren1) 
+		{
+			child.gameObject.SetActive (false);
+			child.GetComponent<StageFormation> ().selectedPart = false;
+		}
+
+		/* TODO: Sets levelDesignTwo stageFormations to inactive. Implement when sectionTwo is designed*/
+		Transform allChildren2 = levelDesignTwo.gameObject.GetComponentInChildren <Transform>();
+		foreach (Transform child in allChildren1) 
+		{
+			child.gameObject.SetActive (false);
+			child.GetComponent<StageFormation> ().selectedPart = false;
+		} 
+
+		//For testing
 		updateStage = true;
+		//---
+
+		//stagePartIndex = 0;
+		//levelDesignOne.transform.GetChild (stagePartIndex).gameObject.SetActive (true);
+		//levelDesignOne.transform.GetChild (stagePartIndex).GetComponent<StageFormation> ().selectedPart = true;
 
 	}
 	
@@ -85,21 +106,23 @@ public class GameWall : MonoBehaviour {
 	{
 		if (sectionOne)
 		{
-			//stagePartIndex = (int)Random.Range (0, levelDesignOne.transform.childCount);
-			stagePartIndex = 1;
+			//TODO Dynamically change range of stage parts to be selected from as velocity increases
+
+			stagePartIndex = (int)Random.Range (0, levelDesignOne.transform.childCount);
 			levelDesignOne.transform.GetChild (stagePartIndex).gameObject.SetActive (true);
 			levelDesignOne.transform.GetChild (stagePartIndex).GetComponent<StageFormation> ().selectedPart = true;
 			updateStage = false;
 		}
 
-		/* TODO: Implement when Section Two is Designed
+		/* TODO: Implement when Section Two is Designed*/
 		if (sectionTwo)
 		{
-			stagePartIndex = (int)Random.Range (0, levelDesignTwo.transform.childCount);
+			//stagePartIndex = (int)Random.Range (0, levelDesignTwo.transform.childCount);
+			stagePartIndex = 3;
 			levelDesignTwo.transform.GetChild (stagePartIndex).gameObject.SetActive (true);
 			levelDesignTwo.transform.GetChild (stagePartIndex).GetComponent<StageFormation> ().selectedPart = true;
 			updateStage = false;
-		}*/
+		}
 
 		//TODO If maxVelocity has reached a threshold, increase difficulty slightly
 		//difficultyCurve ();
@@ -166,16 +189,19 @@ public class GameWall : MonoBehaviour {
 
 	}*/
 
+	//Scalar value that modifies maxVelocity in StageFormation
 	public void setArtefactForce()
 	{
-		artefactForce = 7f;
+		artefactForce = 5f;
 	}
 
+	//Returns the artefact force
 	public float getArtefactForce()
 	{
 		return artefactForce;
 	}
 
+	//Resets the artefact force
 	public void resetArtefactForce()
 	{
 		artefactForce = 1f;

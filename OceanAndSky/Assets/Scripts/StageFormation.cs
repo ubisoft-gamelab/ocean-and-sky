@@ -24,10 +24,9 @@ public class StageFormation : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 
-		resetPosition = 5000f;
+		resetPosition = 3500f;
 
-		selectedPart = false;
-		gameObject.SetActive (false);
+
 
 	}
 	
@@ -41,7 +40,7 @@ public class StageFormation : MonoBehaviour {
 		}
 
 		// Else, deactivate the stageFormation
-			else gameObject.SetActive (false);
+			//else gameObject.SetActive (false);
 
 
 	}
@@ -50,7 +49,7 @@ public class StageFormation : MonoBehaviour {
 	//Pops the Plane forward to the resetPosition after colliding with gameWall
 	void popForward()
 	{
-		transform.position = new Vector3(resetPosition, transform.position.y, transform.position.z);
+		transform.position = new Vector3(transform.position.x, transform.position.y, resetPosition);
 	}
 
 
@@ -86,6 +85,7 @@ public class StageFormation : MonoBehaviour {
 			//Tell gameWall to find a new, random, stageFormation
 			gameWall.update ();
 			selectedPart = false;
+			gameObject.SetActive (false);
 		}
 	}
 

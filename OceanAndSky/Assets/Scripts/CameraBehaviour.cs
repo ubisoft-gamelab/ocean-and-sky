@@ -12,90 +12,45 @@ public class CameraBehaviour : MonoBehaviour {
 	public PlaneBehaviour planeOne;
 	public PlaneBehaviour planeTwo;
 
-	Vector3 pos1;
-	Vector3 pos2;
+	public FocalPoint focalPoint;
 
-	float turnForce;
-	float riseForce;
-	float maxHeight;
-	float maxLeft;
-	float maxRight;
+	Vector3 focalPosition;
+	Vector3 focalViewportPosition;
+	Vector3 camPos;
+
+
+
 
 
 	// Use this for initialization
 	void Start () {
 
-		turnForce = 100f;
-		riseForce = 50f;
+		focalPosition = focalPoint.gameObject.transform.position;
+		camPos = Camera.main.transform.position;
 	}
 	
 	// LateUpdate to smoothen movement 
 	void LateUpdate () {
 
-		pos1 = Camera.main.WorldToViewportPoint (P1.transform.position);
-		pos2 = Camera.main.WorldToViewportPoint (P2.transform.position);
+		focalPosition = focalPoint.gameObject.transform.position;
+		focalViewportPosition = Camera.main.WorldToViewportPoint (focalPosition);
+		camPos.x = Camera.main.transform.position.x;
+
+		//Have camera position update based on positon of the focal point
+		camPos.x = Mathf.Lerp (Camera.main.transform.position.x, focalPosition.x, Time.deltaTime * 10);
+		camPos.y = Mathf.Lerp (Camera.main.transform.position.y, focalPosition.y+50f, Time.deltaTime * 10);
+
+		Camera.main.transform.position = camPos;
 
 		//Handle camera motion in relation to player position in viewport
-		handleFollow ();
+		//handleFollow ();
 
 	}
 		
 
 	void handleFollow()
 	{
-		// Viewport goes from (0,0) in bottom left corner to (1,1) in top right corner
-
-		//--- P1 Constraints
-
-		//LEFT SIDE  
-		if (pos1.x <= 0.45f) 
-		{
-			Camera.main.transform.Translate (Vector3.left*Time.deltaTime*turnForce);
-		}
-			
-		//RIGHT SIDE 
-		if (pos1.x >= 0.55f) 
-		{
-			Camera.main.transform.Translate (Vector3.right*Time.deltaTime*turnForce);
-		}
-			
-		//UP SIDE
-		if (pos1.y >= 0.55f) 
-		{
-			Camera.main.transform.Translate (Vector3.up*Time.deltaTime*riseForce);
-		}
-			
-		//DOWN SIDE
-		if (pos1.y <= 0.45f) 
-		{
-			Camera.main.transform.Translate (Vector3.down * Time.deltaTime * riseForce);
-		}
-			
-		//--- P2
-
-		//LEFT SIDE
-		if (pos2.x <= 0.45f) 
-		{
-			Camera.main.transform.Translate (Vector3.left*Time.deltaTime*turnForce);
-		}
-			
-		//RIGHT SIDE
-		if (pos2.x >= 0.55f) 
-		{
-			Camera.main.transform.Translate (Vector3.right*Time.deltaTime*turnForce);
-		}
-			
-		//UP SIDE
-		if (pos2.y >= 0.55f) 
-		{
-			Camera.main.transform.Translate (Vector3.up*Time.deltaTime*riseForce);
-		}
-
-		//DOWN SIDE
-		if (pos2.y <= 0.45f) 
-		{
-			Camera.main.transform.Translate (Vector3.down*Time.deltaTime*riseForce);
-		}
+		//TODO : Handle fluid follow by zooming in and out based on location of focalPoint in viewPort	
 
 	}
 		
