@@ -58,8 +58,10 @@ public class Player : MonoBehaviour {
 	int collisionPenalty;
 	bool maxPenalty;
 
-	// Use this for initialization
-	void Start () {
+    public Flash flash;
+
+    // Use this for initialization
+    void Start () {
 
 		collisionPenalty = 1;
 
@@ -445,13 +447,11 @@ public class Player : MonoBehaviour {
 		if (other.gameObject.tag == "Obstacle")
 		{
 			addCollisionPenalty();
-            if (GameObject.Find("Flash(Clone)") == null)
-            {
-                Instantiate(flash);
-            }
+            flash.gameObject.SetActive(true);
+            flash.isFinished = false;
+
         }
 	}
-    public Flash flash;
 
 	void OnTriggerEnter(Collider other)
 	{
