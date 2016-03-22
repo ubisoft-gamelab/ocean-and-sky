@@ -47,6 +47,8 @@ public class Player : MonoBehaviour {
 	float middlePosition;
 	float rearPosition;
 	float repulsionForce;
+	float verticalMotion;
+	float horizontalMotion;
 
 	float stamina;
 
@@ -55,10 +57,9 @@ public class Player : MonoBehaviour {
 	int maxLeft;
 	int maxRight;
 
-	int collisionPenalty;
+	public int collisionPenalty;
 	bool maxPenalty;
 
-    public Flash flash;
 
     // Use this for initialization
     void Start () {
@@ -67,17 +68,17 @@ public class Player : MonoBehaviour {
 
 		// Set position constraints in the game world
 		maxHeight = 600;
-		minHeight = 30;
-		maxLeft = 1100;
-		maxRight = -1100;
+		minHeight = 35;
+		maxLeft = 2100;
+		maxRight = 5000;
 
 		// Positions where Player is sent to when Escort, Bearer or Neither
-		forwardPosition = -620f;
-		middlePosition = -730f;
-		rearPosition = -820f;
+		forwardPosition = -4500f;
+		middlePosition = -4600f;
+		rearPosition = -4700f;
 
 		//Used to repulse Player on contact with PushArtefact
-		repulsionForce = 800f;
+		repulsionForce = 500f;
 
 		//Stamina ranges from 0 to 50
 		stamina = 50f;
@@ -136,6 +137,10 @@ public class Player : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+		//Make motion of player scale by maxVelocity 
+		verticalMotion =0.15f * planeOne.getMaxVelocity();
+		horizontalMotion = 0.15f * planeOne.getMaxVelocity ();
 
 		// Clamp Player velocity to prevent launching off screen from collision force
 		rigidBody.velocity = Vector3.ClampMagnitude(rigidBody.velocity, 1f);
@@ -228,7 +233,7 @@ public class Player : MonoBehaviour {
 		{ 
 			if (transform.position.y <= maxHeight) 
 			{
-				transform.Translate (Vector3.right * Time.deltaTime * 110);
+				transform.Translate (Vector3.right * Time.deltaTime * verticalMotion);
 			}
 		}
 
@@ -237,25 +242,25 @@ public class Player : MonoBehaviour {
 		{ 
 			if ( transform.position.y >= minHeight)
 			{
-					transform.Translate (Vector3.left * Time.deltaTime * 110);
+					transform.Translate (Vector3.left * Time.deltaTime * verticalMotion);
 			}
 		}
 			
 		// LEFTInput Handler
 		if (Input.GetKey(leftInput)) 
 		{ 
-			if (transform.position.z <= maxLeft) 
+			if (transform.position.x >= maxLeft) 
 			{
-				transform.Translate (Vector3.back * Time.deltaTime * 200);
+				transform.Translate (Vector3.back * Time.deltaTime * horizontalMotion);
 			}
 		}
 
 		// RIGHTInput Handler 
 		if (Input.GetKey(rightInput)) 
 		{ 
-			if (transform.position.z >= maxRight) 
+			if (transform.position.x <= maxRight) 
 			{
-				transform.Translate (Vector3.forward * Time.deltaTime * 200); 
+				transform.Translate (Vector3.forward * Time.deltaTime * horizontalMotion); 
 			}
 		}
 			
@@ -308,20 +313,20 @@ public class Player : MonoBehaviour {
 	// Moves Player forward
 	void moveForward()
 	{
-		transform.position = new Vector3 (forwardPosition, transform.position.y, transform.position.z);
+		transform.position = new Vector3 (transform.position.x, transform.position.y, forwardPosition);
 	}
 
 
 	// Moves Player to middle
 	void moveMiddle()
 	{
-		transform.position = new Vector3 (middlePosition, transform.position.y, transform.position.z);
+		transform.position = new Vector3 (transform.position.x, transform.position.y, middlePosition);
 	}
 
 	// Moves Player backwards
 	void moveBackward()
 	{
-		transform.position = new Vector3 (rearPosition, transform.position.y, transform.position.z);
+		transform.position = new Vector3 (transform.position.x, transform.position.y, rearPosition);
 	}
 
 	// Catches the Burden if in range to catch
@@ -399,6 +404,11 @@ public class Player : MonoBehaviour {
 		//If not a Bearer, increase stamina
 		else stamina++;
 	}
+
+	public bool getFatigue()
+	{
+		return isFatigued;
+	}
 	
 	// Sets the SlipStream (Player's first child), to active 
 	void activateSlipStream()
@@ -416,14 +426,14 @@ public class Player : MonoBehaviour {
 	void repulseRight()
 	{
 		transform.Translate(Vector3.forward * Time.deltaTime * repulsionForce ); 
-		Camera.main.transform.Translate (Vector3.right * Time.deltaTime * repulsionForce * 0.8f);
+		Camera.main.transform.Translate (Vector3.right * Time.deltaTime * repulsionForce * 1.1f);
 	}
 
 	// Repulse Player towards the left.
 	void repulseLeft()
 	{
 		transform.Translate(Vector3.back * Time.deltaTime * repulsionForce); 
-		Camera.main.transform.Translate (Vector3.left * Time.deltaTime * repulsionForce * 0.8f);
+		Camera.main.transform.Translate (Vector3.left * Time.deltaTime * repulsionForce * 1.1f);
 	}
 
 	// Reset Artefact Properties after a stageFormation has collided with gameWall
@@ -444,13 +454,9 @@ public class Player : MonoBehaviour {
 	void OnCollisionEnter(Collision other)
 	{
 		// Check if collided with 'Obstacle'. Adds collisionPenalty
-		if (other.gameObject.tag == "Obstacle")
-		{
-			addCollisionPenalty();
-            flash.gameObject.SetActive(true);
-            flash.isFinished = false;
-
-        }
+		if (other.gameObject.tag == "Obstacle") {
+			addCollisionPenalty ();
+		}
 	}
 
 	void OnTriggerEnter(Collider other)

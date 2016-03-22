@@ -30,7 +30,7 @@ public class PlaneBehaviour : MonoBehaviour {
 	void Start () {
 		
 		maxVelocity = 900f;
-		resetPosition = 3250f;
+		resetPosition = -1630f;
 
 		currentPosition = transform.position;
 
@@ -51,13 +51,13 @@ public class PlaneBehaviour : MonoBehaviour {
 	 */ 
 	void popForward()
 	{
-		transform.position = new Vector3(resetPosition, currentPosition.y, currentPosition.z);
+		transform.position = new Vector3(currentPosition.x, currentPosition.y, resetPosition);
 	}
 
 	 // Moves the Plane forward incrementally by every frame
 	public void move()
 	{
-		transform.Translate (Vector3.left * Time.deltaTime * maxVelocity);
+		transform.Translate (Vector3.back * Time.deltaTime * maxVelocity);
 	}
 
 	/** 
@@ -66,15 +66,22 @@ public class PlaneBehaviour : MonoBehaviour {
 	 */
 	public void increaseMaxVelocity()
 	{
+		Debug.Log ("Velocity is : " + maxVelocity);
+		//If Burden is at rest or if either Player has collided recently, do not increment maxVelocity
 		if((P1.getCollisionPenalty() > 0) || P2.getCollisionPenalty() > 0 || burden.isResting())
+		{
+			return;
+		}
+
+		//If either player is fatigued do not incremente maxVelocity
+		if (P1.getFatigue() || P2.getFatigue()) 
 		{
 			return;
 		}
 
 
 		maxVelocity += 90;
-		Debug.Log ("Velocity Increased");
-
+		Debug.Log ("Increased Velocity");
 	}
 
 	public float getMaxVelocity()

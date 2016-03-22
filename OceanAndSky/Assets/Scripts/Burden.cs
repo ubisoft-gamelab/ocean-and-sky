@@ -40,6 +40,8 @@ public class Burden : MonoBehaviour {
 		forwardForce = 250f;
 		upForce = 150f;
 
+		restPosition = new Vector3 (3330, minHeight, -4600f);
+
 	}
 
 	// Update is called once per frame
@@ -54,6 +56,8 @@ public class Burden : MonoBehaviour {
 			forwardForce -= 5;
 			upForce -= 5;
 		}
+
+		if (isAtRest) restorePosition();
 	}
 
 
@@ -93,7 +97,7 @@ public class Burden : MonoBehaviour {
 		parentPosition = gameObject.transform.parent.position;
 
 		//Move Burden to slightly behind parent
-		transform.position = new Vector3 (parentPosition.x-40, parentPosition.y, parentPosition.z);
+		transform.position = new Vector3 (parentPosition.x, parentPosition.y, parentPosition.z-40);
 	}
 
 	/*
@@ -107,6 +111,11 @@ public class Burden : MonoBehaviour {
 		GetComponent<SphereCollider> ().enabled = true;
 		isAtRest = false;
 
+	}
+
+	void restorePosition()
+	{
+		transform.position = restPosition;
 	}
 
 	// Force that propels Burden forwards when throwInput is pressed 
@@ -125,7 +134,7 @@ public class Burden : MonoBehaviour {
 
 		//Simulates Parabola Arc of being thrown. Applies a weakening upward and forward force
 		transform.Translate (Vector3.up * Time.deltaTime * upForce);
-		transform.Translate(Vector3.right * Time.deltaTime * forwardForce);
+		transform.Translate(Vector3.forward * Time.deltaTime * forwardForce);
 
 	}
 
