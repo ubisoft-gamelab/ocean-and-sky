@@ -58,8 +58,10 @@ public class Player : MonoBehaviour {
 	int collisionPenalty;
 	bool maxPenalty;
 
-	// Use this for initialization
-	void Start () {
+    public Flash flash;
+
+    // Use this for initialization
+    void Start () {
 
 		collisionPenalty = 1;
 
@@ -445,7 +447,10 @@ public class Player : MonoBehaviour {
 		if (other.gameObject.tag == "Obstacle")
 		{
 			addCollisionPenalty();
-		}
+            flash.gameObject.SetActive(true);
+            flash.isFinished = false;
+
+        }
 	}
 
 	void OnTriggerEnter(Collider other)
@@ -484,7 +489,6 @@ public class Player : MonoBehaviour {
 				gameWall.setArtefactForce ();
 			}
 		}
-
 
 	}
 
