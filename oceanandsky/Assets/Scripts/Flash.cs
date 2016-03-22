@@ -18,7 +18,6 @@ public class Flash : MonoBehaviour {
         i = 0;
 	}
 
-
 	void Update () {
 
         if (!isFinished)

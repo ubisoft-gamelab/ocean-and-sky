@@ -5,7 +5,6 @@ public class CameraPosition : MonoBehaviour {
 
     public Player P1;
     public Player P2;
-
 	
 	void Update () {
         //The average of the two z positions
