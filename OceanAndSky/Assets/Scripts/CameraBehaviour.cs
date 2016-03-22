@@ -45,8 +45,6 @@ public class CameraBehaviour : MonoBehaviour {
         disapearTime = 0;
 
     }
-
-
    
 
     //Makes an obstacle disappear briefly while the camera passes through
