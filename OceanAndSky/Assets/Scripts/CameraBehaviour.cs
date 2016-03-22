@@ -18,15 +18,18 @@ public class CameraBehaviour : MonoBehaviour {
 	Vector3 focalViewportPosition;
 	Vector3 camPos;
 
+    //The players starting positions
+    Vector3 originalPos;
 
 
 
-
+    
 	// Use this for initialization
 	void Start () {
 
 		focalPosition = focalPoint.gameObject.transform.position;
 		camPos = Camera.main.transform.position;
+        originalPos = camPos;
 	}
 	
 	// LateUpdate to smoothen movement 
@@ -43,15 +46,24 @@ public class CameraBehaviour : MonoBehaviour {
 		Camera.main.transform.position = camPos;
 
 		//Handle camera motion in relation to player position in viewport
-		//handleFollow ();
+		handleFollow ();
 
 	}
-		
+
 
 	void handleFollow()
 	{
-		//TODO : Handle fluid follow by zooming in and out based on location of focalPoint in viewPort	
+        //TODO : Handle fluid follow by zooming in and out based on location of focalPoint in viewPort
+        //Assuming players start on the surface of the ocean
+        float zoom = 80 - (transform.position.y - originalPos.y) * 0.1f;
+        if(zoom < 50)
+        {
+            zoom = 50;
+        }
+        Camera.main.fieldOfView = Mathf.Lerp(Camera.main.fieldOfView, zoom, 0.1f);
 
 	}
-		
+
+
+
 }
