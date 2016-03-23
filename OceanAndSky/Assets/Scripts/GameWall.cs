@@ -53,8 +53,8 @@ public class GameWall : MonoBehaviour {
 		sixthThreshold =;
 		*/
 
-		sectionOne = true;
-		sectionTwo = false;
+		sectionOne = false;
+		sectionTwo = true;
 
 		//Sets levelDesignOne stageFormations to inactive
 		Transform allChildren1 = levelDesignOne.gameObject.GetComponentInChildren <Transform>();
@@ -66,7 +66,7 @@ public class GameWall : MonoBehaviour {
 
 		/* TODO: Sets levelDesignTwo stageFormations to inactive. Implement when sectionTwo is designed*/
 		Transform allChildren2 = levelDesignTwo.gameObject.GetComponentInChildren <Transform>();
-		foreach (Transform child in allChildren1) 
+		foreach (Transform child in allChildren2) 
 		{
 			child.gameObject.SetActive (false);
 			child.GetComponent<StageFormation> ().selectedPart = false;
@@ -119,7 +119,7 @@ public class GameWall : MonoBehaviour {
 		else if (sectionTwo)
 		{
 			//stagePartIndex = (int)Random.Range (0, levelDesignTwo.transform.childCount);
-			stagePartIndex = 2;
+			stagePartIndex = 3;
 			levelDesignTwo.transform.GetChild (stagePartIndex).gameObject.SetActive (true);
 			levelDesignTwo.transform.GetChild (stagePartIndex).GetComponent<StageFormation> ().selectedPart = true;
 			updateStage = false;

@@ -11,6 +11,8 @@ using System.Collections;
  */
 public class PlaneBehaviour : MonoBehaviour {
 	
+	public PlaneBehaviour otherPlane;
+
 	public Player P1;
 	public Player P2;
 
@@ -29,8 +31,8 @@ public class PlaneBehaviour : MonoBehaviour {
 	
 	void Start () {
 		
-		maxVelocity = 900f;
-		resetPosition = -1630;
+		maxVelocity = 2000f;
+		resetPosition = otherPlane.transform.position.z;// + 10000f;
 
 		currentPosition = transform.position;
 
@@ -40,7 +42,7 @@ public class PlaneBehaviour : MonoBehaviour {
 	}
 		
 	void Update () {
-
+		resetPosition = otherPlane.transform.position.z + 4500f;
 		/** Constantly move the plane forward **/
 		move ();
 	}
@@ -52,6 +54,8 @@ public class PlaneBehaviour : MonoBehaviour {
 	void popForward()
 	{
 		transform.position = new Vector3(currentPosition.x, currentPosition.y, resetPosition);
+		//transform.position = new Vector3(currentPosition.x, resetPosition, currentPosition.z);
+		//transform.position = new Vector3(resetPosition, currentPosition.y, currentPosition.z);
 	}
 
 	 // Moves the Plane forward incrementally by every frame

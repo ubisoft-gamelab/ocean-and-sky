@@ -40,6 +40,7 @@ public class Player : MonoBehaviour {
 	bool canCatch;
 	bool canThrow;
 	bool isFatigued;
+	bool isDashing;
 	bool inSlipStream;
 	bool hitPushArtefactLeft;
 	bool hitPushArtefactRight;
@@ -245,10 +246,16 @@ public class Player : MonoBehaviour {
 		{ 
 
 			//TODO Implement upDash here
-			if ((transform.position.y <= maxHeight) && Input.GetKey(dashInput))
+			if ((transform.position.y <= maxHeight) && Input.GetKeyDown(dashInput) && !isDashing)
 			{
-				transform.Translate (Vector3.right * Time.deltaTime * verticalDashMotion);
+				Debug.Log("starting dash up");
+
+				StartCoroutine("PlayerDash", new object[]{Time.time, upInput});
+
+				//transform.Translate (Vector3.right * Time.deltaTime * verticalDashMotion);
 			}
+
+
 
 			else if (transform.position.y <= maxHeight)
 			{
@@ -258,16 +265,36 @@ public class Player : MonoBehaviour {
 
 		// DOWNInput Handler
 		if (Input.GetKey(downInput)) 
-		{ 
+		{
+			if ((transform.position.y >= minHeight) && Input.GetKeyDown(dashInput) && !isDashing)
+			{
+				Debug.Log("starting dash down");
+
+				StartCoroutine("PlayerDash", new object[] { Time.time, downInput });
+				//transform.Translate (Vector3.right * Time.deltaTime * verticalDashMotion);
+			}
+
+
 			if ( transform.position.y >= minHeight)
 			{
-					transform.Translate (Vector3.left * Time.deltaTime * verticalMotion);
+				transform.Translate (Vector3.left * Time.deltaTime * verticalMotion);
 			}
 		}
-			
+
 		// LEFTInput Handler
 		if (Input.GetKey(leftInput)) 
-		{ 
+		{
+			Debug.Log("starting dash right");
+
+			if ((transform.position.x >= maxLeft) && Input.GetKeyDown(dashInput) && !isDashing)
+			{
+				Debug.Log("starting dash left");
+
+				StartCoroutine("PlayerDash", new object[] { Time.time, leftInput});
+				//transform.Translate (Vector3.right * Time.deltaTime * verticalDashMotion);
+			}
+
+
 			if (transform.position.x >= maxLeft) 
 			{
 				transform.Translate (Vector3.back * Time.deltaTime * horizontalMotion);
@@ -276,13 +303,21 @@ public class Player : MonoBehaviour {
 
 		// RIGHTInput Handler 
 		if (Input.GetKey(rightInput)) 
-		{ 
+		{
+			if ((transform.position.x <= maxRight) && Input.GetKeyDown(dashInput) && !isDashing)
+			{
+				Debug.Log("starting dash right");
+				StartCoroutine("PlayerDash", new object[] { Time.time, rightInput });
+				//transform.Translate (Vector3.right * Time.deltaTime * verticalDashMotion);
+			}
+
+
 			if (transform.position.x <= maxRight) 
 			{
 				transform.Translate (Vector3.forward * Time.deltaTime * horizontalMotion); 
 			}
 		}
-			
+
 		// CATCHInput Handler 
 		if (Input.GetKeyDown(catchInput) && canCatch && !isFatigued)
 		{
@@ -300,6 +335,32 @@ public class Player : MonoBehaviour {
 			throwBurden();
 		}
 
+	}
+
+	IEnumerator PlayerDash(object[] parameters)
+	{
+		isDashing = true;
+
+		var timeKeyPressed = (float)parameters[0];
+		var key = (KeyCode)parameters[1];
+		Vector3 direction = new Vector3(0,0,0);
+		int accelerationReduction = 1;
+
+		if (key == upInput) direction = Vector3.right * Time.deltaTime;
+		else if (key == downInput) direction = Vector3.left * Time.deltaTime;
+		else if (key == leftInput) direction = Vector3.back * Time.deltaTime;
+		else if (key == rightInput) direction = Vector3.forward * Time.deltaTime;
+
+
+
+		while (Time.time - timeKeyPressed < 0.5f)
+		{
+			accelerationReduction += 1;
+			if (Input.GetKey(key)) transform.Translate(direction * (verticalDashMotion / accelerationReduction));
+			yield return new WaitForEndOfFrame();
+		}
+
+		isDashing = false;
 	}
 
 	void handlePosition()
