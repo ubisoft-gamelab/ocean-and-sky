@@ -30,6 +30,9 @@ public class Player : MonoBehaviour {
 	KeyCode rightInput;
 	KeyCode catchInput;
 	KeyCode throwInput;
+	//update
+	KeyCode dashInput;
+
 
 	public bool isPlayer1;
 
@@ -43,12 +46,11 @@ public class Player : MonoBehaviour {
 	bool hitPushArtefactLeft;
 	bool hitPushArtefactRight;
 
+
 	float forwardPosition;
 	float middlePosition;
 	float rearPosition;
 	float repulsionForce;
-	float verticalMotion;
-	float horizontalMotion;
 
 	float stamina;
 
@@ -57,28 +59,27 @@ public class Player : MonoBehaviour {
 	int maxLeft;
 	int maxRight;
 
-	public int collisionPenalty;
+	int collisionPenalty;
 	bool maxPenalty;
 
-
-    // Use this for initialization
-    void Start () {
+	// Use this for initialization
+	void Start () {
 
 		collisionPenalty = 1;
 
 		// Set position constraints in the game world
 		maxHeight = 600;
-		minHeight = 35;
-		maxLeft = 2100;
-		maxRight = 5000;
+		minHeight = 30;
+		maxLeft = 1100;
+		maxRight = -1100;
 
 		// Positions where Player is sent to when Escort, Bearer or Neither
-		forwardPosition = -4500f;
-		middlePosition = -4600f;
-		rearPosition = -4700f;
+		forwardPosition = -620f;
+		middlePosition = -730f;
+		rearPosition = -820f;
 
 		//Used to repulse Player on contact with PushArtefact
-		repulsionForce = 500f;
+		repulsionForce = 800f;
 
 		//Stamina ranges from 0 to 50
 		stamina = 50f;
@@ -115,6 +116,7 @@ public class Player : MonoBehaviour {
 			rightInput = KeyCode.RightArrow;
 			catchInput = KeyCode.RightShift;
 			throwInput = KeyCode.LeftShift;
+			dashInput = KeyCode.Space;
 		} 
 
 		else
@@ -125,6 +127,7 @@ public class Player : MonoBehaviour {
 			rightInput = KeyCode.D;
 			catchInput = KeyCode.Tab;
 			throwInput = KeyCode.C;
+			dashInput = KeyCode.R;
 		}
 
 		 
@@ -137,10 +140,6 @@ public class Player : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
-		//Make motion of player scale by maxVelocity 
-		verticalMotion =0.15f * planeOne.getMaxVelocity();
-		horizontalMotion = 0.15f * planeOne.getMaxVelocity ();
 
 		// Clamp Player velocity to prevent launching off screen from collision force
 		rigidBody.velocity = Vector3.ClampMagnitude(rigidBody.velocity, 1f);
@@ -162,6 +161,8 @@ public class Player : MonoBehaviour {
 
 		//Handle Player position based on isBearer, isEscort or isNeither
 		handlePosition ();
+
+		resizeEscort ();
 	}
 		
 
@@ -231,36 +232,75 @@ public class Player : MonoBehaviour {
 		/// UPInput Handler
 		if (Input.GetKey(upInput)) 
 		{ 
-			if (transform.position.y <= maxHeight) 
-			{
-				transform.Translate (Vector3.right * Time.deltaTime * verticalMotion);
-			}
-		}
+			if (Input.GetKeyDown (dashInput) && transform.position.y <= maxHeight&&stamina>=3) {
+			
+				for (int i = 0; i <= 10; i++) {
+					transform.Translate (Vector3.right * Time.deltaTime * 300);
+				}
 
+				stamina -= 3;
+			}
+
+			else if (transform.position.y <= maxHeight) 
+			{
+				transform.Translate (Vector3.right * Time.deltaTime * 110);
+
+			
+			}
+
+		}
 		// DOWNInput Handler
 		if (Input.GetKey(downInput)) 
 		{ 
-			if ( transform.position.y >= minHeight)
+
+			if (Input.GetKeyDown (dashInput) && transform.position.y >= minHeight&&stamina>=3) {
+				for(int i=0;i<=5;i++){
+				transform.Translate (Vector3.left * Time.deltaTime * 300);
+				}
+				stamina -= 3;
+			}
+
+			else if ( transform.position.y >= minHeight)
 			{
-					transform.Translate (Vector3.left * Time.deltaTime * verticalMotion);
+					transform.Translate (Vector3.left * Time.deltaTime * 110);
 			}
 		}
 			
 		// LEFTInput Handler
 		if (Input.GetKey(leftInput)) 
 		{ 
-			if (transform.position.x >= maxLeft) 
+
+			if (Input.GetKeyDown (dashInput) && transform.position.y <= maxLeft&&stamina>=3) {
+				for (int i = 0; i <= 5; i++) {
+					transform.Translate (Vector3.back * Time.deltaTime * 300);
+				}
+				stamina -= 3;
+				
+			}
+
+
+
+			else if (transform.position.z <= maxLeft) 
 			{
-				transform.Translate (Vector3.back * Time.deltaTime * horizontalMotion);
+				transform.Translate (Vector3.back * Time.deltaTime * 200);
 			}
 		}
 
 		// RIGHTInput Handler 
 		if (Input.GetKey(rightInput)) 
 		{ 
-			if (transform.position.x <= maxRight) 
+
+			if (Input.GetKeyDown (dashInput) && transform.position.y >= maxRight&&stamina>=3) {
+				for (int i = 0; i <= 5; i++) {
+					transform.Translate (Vector3.forward * Time.deltaTime * 300);
+				}
+				stamina -= 3;
+			}
+
+
+			if (transform.position.z >= maxRight) 
 			{
-				transform.Translate (Vector3.forward * Time.deltaTime * horizontalMotion); 
+				transform.Translate (Vector3.forward * Time.deltaTime * 200); 
 			}
 		}
 			
@@ -280,6 +320,7 @@ public class Player : MonoBehaviour {
 		{
 			throwBurden();
 		}
+
 
 	}
 
@@ -313,20 +354,20 @@ public class Player : MonoBehaviour {
 	// Moves Player forward
 	void moveForward()
 	{
-		transform.position = new Vector3 (transform.position.x, transform.position.y, forwardPosition);
+		transform.position = new Vector3 (forwardPosition, transform.position.y, transform.position.z);
 	}
 
 
 	// Moves Player to middle
 	void moveMiddle()
 	{
-		transform.position = new Vector3 (transform.position.x, transform.position.y, middlePosition);
+		transform.position = new Vector3 (middlePosition, transform.position.y, transform.position.z);
 	}
 
 	// Moves Player backwards
 	void moveBackward()
 	{
-		transform.position = new Vector3 (transform.position.x, transform.position.y, rearPosition);
+		transform.position = new Vector3 (rearPosition, transform.position.y, transform.position.z);
 	}
 
 	// Catches the Burden if in range to catch
@@ -397,17 +438,12 @@ public class Player : MonoBehaviour {
 			isFatigued = false;
 			return;
 		}
-
+		//no loop?
 		//If a Bearer, deplete stamina
 		if (isBearer) stamina -= 1 + (gameWall.getDepletionRate());
 
 		//If not a Bearer, increase stamina
 		else stamina++;
-	}
-
-	public bool getFatigue()
-	{
-		return isFatigued;
 	}
 	
 	// Sets the SlipStream (Player's first child), to active 
@@ -426,14 +462,14 @@ public class Player : MonoBehaviour {
 	void repulseRight()
 	{
 		transform.Translate(Vector3.forward * Time.deltaTime * repulsionForce ); 
-		Camera.main.transform.Translate (Vector3.right * Time.deltaTime * repulsionForce * 1.1f);
+		Camera.main.transform.Translate (Vector3.right * Time.deltaTime * repulsionForce * 0.8f);
 	}
 
 	// Repulse Player towards the left.
 	void repulseLeft()
 	{
 		transform.Translate(Vector3.back * Time.deltaTime * repulsionForce); 
-		Camera.main.transform.Translate (Vector3.left * Time.deltaTime * repulsionForce * 1.1f);
+		Camera.main.transform.Translate (Vector3.left * Time.deltaTime * repulsionForce * 0.8f);
 	}
 
 	// Reset Artefact Properties after a stageFormation has collided with gameWall
@@ -454,10 +490,16 @@ public class Player : MonoBehaviour {
 	void OnCollisionEnter(Collision other)
 	{
 		// Check if collided with 'Obstacle'. Adds collisionPenalty
-		if (other.gameObject.tag == "Obstacle") {
-			addCollisionPenalty ();
-		}
+		if (other.gameObject.tag == "Obstacle")
+		{
+			addCollisionPenalty();
+            if (GameObject.Find("Flash(Clone)") == null)
+            {
+                Instantiate(flash);
+            }
+        }
 	}
+    public Flash flash;
 
 	void OnTriggerEnter(Collider other)
 	{
@@ -522,5 +564,16 @@ public class Player : MonoBehaviour {
 			inSlipStream = false;
 		}
 
+	}
+
+	void resizeEscort(){
+		if (isEscort) {
+		
+			transform.localScale = new Vector3 (40f, 40f, 40f);
+		} 
+		else {
+			transform.localScale = new Vector3 (25f, 25f, 25f);
+		}
+	
 	}
 }
