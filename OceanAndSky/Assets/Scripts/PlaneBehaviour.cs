@@ -30,7 +30,7 @@ public class PlaneBehaviour : MonoBehaviour {
 	void Start () {
 		
 		maxVelocity = 900f;
-		resetPosition = -1630f;
+		resetPosition = -1630;
 
 		currentPosition = transform.position;
 

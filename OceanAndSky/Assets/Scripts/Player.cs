@@ -30,6 +30,7 @@ public class Player : MonoBehaviour {
 	KeyCode rightInput;
 	KeyCode catchInput;
 	KeyCode throwInput;
+	KeyCode dashInput;
 
 	public bool isPlayer1;
 
@@ -49,6 +50,8 @@ public class Player : MonoBehaviour {
 	float repulsionForce;
 	float verticalMotion;
 	float horizontalMotion;
+	float verticalDashMotion;
+	float horizontalDashMotion;
 
 	float stamina;
 
@@ -56,12 +59,14 @@ public class Player : MonoBehaviour {
 	int minHeight;
 	int maxLeft;
 	int maxRight;
+	int dashCost;
 
 	public int collisionPenalty;
 	bool maxPenalty;
 
-	// Use this for initialization
-	void Start () {
+
+    // Use this for initialization
+    void Start () {
 
 		collisionPenalty = 1;
 
@@ -81,6 +86,9 @@ public class Player : MonoBehaviour {
 
 		//Stamina ranges from 0 to 50
 		stamina = 50f;
+
+		//Set stamina cost of dashing
+		dashCost = 3;
 
 		// Gets the SlipStream and initially sets it to inactive
 		slipStream = gameObject.transform.GetChild (0);
@@ -113,7 +121,8 @@ public class Player : MonoBehaviour {
 			leftInput = KeyCode.LeftArrow;
 			rightInput = KeyCode.RightArrow;
 			catchInput = KeyCode.RightShift;
-			throwInput = KeyCode.LeftShift;
+			throwInput = KeyCode.P;
+			dashInput = KeyCode.Space;
 		} 
 
 		else
@@ -124,6 +133,7 @@ public class Player : MonoBehaviour {
 			rightInput = KeyCode.D;
 			catchInput = KeyCode.Tab;
 			throwInput = KeyCode.C;
+			dashInput = KeyCode.R;
 		}
 
 		 
@@ -138,8 +148,11 @@ public class Player : MonoBehaviour {
 	void Update () {
 
 		//Make motion of player scale by maxVelocity 
-		verticalMotion =0.15f * planeOne.getMaxVelocity();
+		verticalMotion = 0.15f * planeOne.getMaxVelocity();
 		horizontalMotion = 0.15f * planeOne.getMaxVelocity ();
+
+		verticalDashMotion = 5f * verticalMotion;
+		horizontalDashMotion = 5f * horizontalMotion;
 
 		// Clamp Player velocity to prevent launching off screen from collision force
 		rigidBody.velocity = Vector3.ClampMagnitude(rigidBody.velocity, 1f);
@@ -230,7 +243,14 @@ public class Player : MonoBehaviour {
 		/// UPInput Handler
 		if (Input.GetKey(upInput)) 
 		{ 
-			if (transform.position.y <= maxHeight) 
+
+			//TODO Implement upDash here
+			if ((transform.position.y <= maxHeight) && Input.GetKey(dashInput))
+			{
+				transform.Translate (Vector3.right * Time.deltaTime * verticalDashMotion);
+			}
+
+			else if (transform.position.y <= maxHeight)
 			{
 				transform.Translate (Vector3.right * Time.deltaTime * verticalMotion);
 			}
@@ -452,10 +472,13 @@ public class Player : MonoBehaviour {
 
 	void OnCollisionEnter(Collision other)
 	{
+		ContactPoint contact = other.contacts [0];
+		//transform.Translate(-contact.normal*2000*Time.deltaTime);
+		//transform.Translate(Vector3.Reflect(transform.position , -contact.normal) * Time.deltaTime);
 		// Check if collided with 'Obstacle'. Adds collisionPenalty
-		if (other.gameObject.tag == "Obstacle")
-		{
-			addCollisionPenalty();
+		if (other.gameObject.tag == "Obstacle") {
+			transform.Translate(Vector3.Reflect(transform.position , -contact.normal) * Time.deltaTime);	
+			addCollisionPenalty ();
 		}
 	}
 
@@ -495,7 +518,6 @@ public class Player : MonoBehaviour {
 				gameWall.setArtefactForce ();
 			}
 		}
-
 
 	}
 
