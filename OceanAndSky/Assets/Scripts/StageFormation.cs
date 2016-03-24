@@ -20,13 +20,10 @@ public class StageFormation : MonoBehaviour {
 	public bool selectedPart;
 
 
-
 	// Use this for initialization
 	void Start () {
 
 		resetPosition = 3500f;
-
-
 
 	}
 	
@@ -56,7 +53,11 @@ public class StageFormation : MonoBehaviour {
 	// Moves the stageFormation forwards constantly
 	public void move()
 	{
-		transform.Translate (Vector3.left * Time.deltaTime * firstPlane.getMaxVelocity()*0.9f*gameWall.getArtefactForce());
+		if (gameObject.name == "Transition : Clouds") {
+			transform.Translate (Vector3.up * Time.deltaTime * firstPlane.getMaxVelocity () * 0.9f * gameWall.getArtefactForce ());
+		} else {
+			transform.Translate (Vector3.left * Time.deltaTime * firstPlane.getMaxVelocity () * 0.9f * gameWall.getArtefactForce ());
+		}
 	}
 		
 
@@ -68,25 +69,31 @@ public class StageFormation : MonoBehaviour {
 		 * Tell GameWall to pick another random StageFormation
 		 */
 		if (other.gameObject.name == "GameWall") {
-			Debug.Log ("GameWall hit");
 
-			//Reset any changes to ArtefactForces
-			gameWall.resetArtefactForce();
-			P1.resetArtefactProperties ();
-			P2.resetArtefactProperties ();
+				//Reset any changes to ArtefactForces
+				gameWall.resetArtefactForce ();
+				P1.resetArtefactProperties ();
+				P2.resetArtefactProperties ();
 
-			//Move the stageFormation fowards
-			popForward ();
+				//Move the stageFormation fowards
+				popForward ();
 
-			//Increase maxVelocity
-			firstPlane.increaseMaxVelocity ();
-			secondPlane.increaseMaxVelocity ();
+				//Increase maxVelocity
+				firstPlane.increaseMaxVelocity ();
+				secondPlane.increaseMaxVelocity ();
 
-			//Tell gameWall to find a new, random, stageFormation
-			gameWall.update ();
-			selectedPart = false;
-			gameObject.SetActive (false);
+			if (gameObject.name == "Transition : Clouds") {
+				gameWall.updateGame (0);
+				LowerObject.stopFall ();
+			} else {
+				gameWall.updateGame ();
+			}
+
+
+				selectedPart = false;
+				gameObject.SetActive (false);
 		}
 	}
-
 }
+
+

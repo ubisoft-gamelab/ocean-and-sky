@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityStandardAssets.ImageEffects;
 
 
 /**
@@ -20,6 +21,8 @@ public class Player : MonoBehaviour {
 
 	Transform slipStream;
 
+	Vector3 dashDirection;
+
 	public PlaneBehaviour planeOne;
 	public PlaneBehaviour planeTwo;
 
@@ -34,7 +37,7 @@ public class Player : MonoBehaviour {
 
 	public bool isPlayer1;
 
-	bool isNeither; // Checks if neither Bearer nor Escort
+	public bool isNeither; // Checks if neither Bearer nor Escort
 	public bool isBearer;
 	public bool isEscort;
 	bool canCatch;
@@ -44,6 +47,7 @@ public class Player : MonoBehaviour {
 	bool inSlipStream;
 	bool hitPushArtefactLeft;
 	bool hitPushArtefactRight;
+	bool isFlickering;
 
 	float forwardPosition;
 	float middlePosition;
@@ -51,16 +55,20 @@ public class Player : MonoBehaviour {
 	float repulsionForce;
 	float verticalMotion;
 	float horizontalMotion;
-	float verticalDashMotion;
-	float horizontalDashMotion;
+	float dashMotion;
+	float collisionCost;
+	float dashCost;
+	float eps;
+	float bearerCoeff;
 
-	float stamina;
+	public float stamina;
+	float checkpointStamina;
 
 	int maxHeight;
 	int minHeight;
 	int maxLeft;
 	int maxRight;
-	int dashCost;
+
 
 	public int collisionPenalty;
 	bool maxPenalty;
@@ -69,6 +77,7 @@ public class Player : MonoBehaviour {
     // Use this for initialization
     void Start () {
 
+		dashDirection = Vector3.zero;
 		collisionPenalty = 1;
 
 		// Set position constraints in the game world
@@ -76,6 +85,7 @@ public class Player : MonoBehaviour {
 		minHeight = 35;
 		maxLeft = 2100;
 		maxRight = 5000;
+		eps = 40f;
 
 		// Positions where Player is sent to when Escort, Bearer or Neither
 		forwardPosition = -4500f;
@@ -87,9 +97,11 @@ public class Player : MonoBehaviour {
 
 		//Stamina ranges from 0 to 50
 		stamina = 50f;
+		checkpointStamina = stamina;
+		collisionCost = 0.1f;
 
 		//Set stamina cost of dashing
-		dashCost = 3;
+		dashCost = 3f;
 
 		// Gets the SlipStream and initially sets it to inactive
 		slipStream = gameObject.transform.GetChild (0);
@@ -149,11 +161,19 @@ public class Player : MonoBehaviour {
 	void Update () {
 
 		//Make motion of player scale by maxVelocity 
-		verticalMotion = 0.15f * planeOne.getMaxVelocity();
-		horizontalMotion = 0.15f * planeOne.getMaxVelocity ();
+		verticalMotion = 0.10f * planeOne.getMaxVelocity();
+		horizontalMotion = 0.10f * planeOne.getMaxVelocity ();
 
-		verticalDashMotion = 5f * verticalMotion;
-		horizontalDashMotion = 5f * horizontalMotion;
+		dashMotion = 7f * verticalMotion;
+
+		//TODO: Clamp Positoin of Player to never go too low
+
+		//Slows the Beaerer's movements if not in slipstream
+		if (isBearer && !inSlipStream)
+			bearerCoeff = 0.4f;
+		else if (isBearer && inSlipStream) bearerCoeff = 1f;
+		else bearerCoeff = 1f;
+
 
 		// Clamp Player velocity to prevent launching off screen from collision force
 		rigidBody.velocity = Vector3.ClampMagnitude(rigidBody.velocity, 1f);
@@ -244,77 +264,67 @@ public class Player : MonoBehaviour {
 		/// UPInput Handler
 		if (Input.GetKey(upInput)) 
 		{ 
-
-			//TODO Implement upDash here
-			if ((transform.position.y <= maxHeight) && Input.GetKeyDown(dashInput) && !isDashing)
+			
+			if ((transform.position.y <= maxHeight-eps) && Input.GetKeyDown(dashInput) && !isDashing)
 			{
-				Debug.Log("starting dash up");
-
+				stamina -= dashCost;
 				StartCoroutine("PlayerDash", new object[]{Time.time, upInput});
-
-				//transform.Translate (Vector3.right * Time.deltaTime * verticalDashMotion);
 			}
 
 
 
 			else if (transform.position.y <= maxHeight)
 			{
-				transform.Translate (Vector3.right * Time.deltaTime * verticalMotion);
+				transform.Translate (Vector3.right * Time.deltaTime * verticalMotion * bearerCoeff);
 			}
 		}
 
 		// DOWNInput Handler
 		if (Input.GetKey(downInput)) 
 		{
-			if ((transform.position.y >= minHeight) && Input.GetKeyDown(dashInput) && !isDashing)
+			if ((transform.position.y >= minHeight+eps) && Input.GetKeyDown(dashInput) && !isDashing)
 			{
-				Debug.Log("starting dash down");
-
+				stamina -= dashCost;
 				StartCoroutine("PlayerDash", new object[] { Time.time, downInput });
-				//transform.Translate (Vector3.right * Time.deltaTime * verticalDashMotion);
 			}
 
 
 			if ( transform.position.y >= minHeight)
 			{
-				transform.Translate (Vector3.left * Time.deltaTime * verticalMotion);
+				transform.Translate (Vector3.left * Time.deltaTime * verticalMotion * bearerCoeff);
 			}
 		}
 
 		// LEFTInput Handler
 		if (Input.GetKey(leftInput)) 
 		{
-			Debug.Log("starting dash right");
 
-			if ((transform.position.x >= maxLeft) && Input.GetKeyDown(dashInput) && !isDashing)
+			if ((transform.position.x >= maxLeft+eps) && Input.GetKeyDown(dashInput) && !isDashing)
 			{
-				Debug.Log("starting dash left");
-
+				stamina -= dashCost;
 				StartCoroutine("PlayerDash", new object[] { Time.time, leftInput});
-				//transform.Translate (Vector3.right * Time.deltaTime * verticalDashMotion);
 			}
 
 
 			if (transform.position.x >= maxLeft) 
 			{
-				transform.Translate (Vector3.back * Time.deltaTime * horizontalMotion);
+				transform.Translate (Vector3.back * Time.deltaTime * horizontalMotion * bearerCoeff);
 			}
 		}
 
 		// RIGHTInput Handler 
 		if (Input.GetKey(rightInput)) 
 		{
-			if ((transform.position.x <= maxRight) && Input.GetKeyDown(dashInput) && !isDashing)
+			if ((transform.position.x <= maxRight-eps) && Input.GetKeyDown(dashInput) && !isDashing)
 			{
-				Debug.Log("starting dash right");
+				stamina -= dashCost;
 				StartCoroutine("PlayerDash", new object[] { Time.time, rightInput });
-				//transform.Translate (Vector3.right * Time.deltaTime * verticalDashMotion);
 			}
 
 
 			if (transform.position.x <= maxRight) 
 			{
-				transform.Translate (Vector3.forward * Time.deltaTime * horizontalMotion); 
+				transform.Translate (Vector3.forward * Time.deltaTime * horizontalMotion * bearerCoeff); 
 			}
 		}
 
@@ -343,20 +353,19 @@ public class Player : MonoBehaviour {
 
 		var timeKeyPressed = (float)parameters[0];
 		var key = (KeyCode)parameters[1];
-		Vector3 direction = new Vector3(0,0,0);
 		int accelerationReduction = 1;
 
-		if (key == upInput) direction = Vector3.right * Time.deltaTime;
-		else if (key == downInput) direction = Vector3.left * Time.deltaTime;
-		else if (key == leftInput) direction = Vector3.back * Time.deltaTime;
-		else if (key == rightInput) direction = Vector3.forward * Time.deltaTime;
+		if (key == upInput) dashDirection = Vector3.right * Time.deltaTime;
+		else if (key == downInput) dashDirection = Vector3.left * Time.deltaTime;
+		else if (key == leftInput) dashDirection = Vector3.back * Time.deltaTime;
+		else if (key == rightInput) dashDirection = Vector3.forward * Time.deltaTime;
 
 
 
 		while (Time.time - timeKeyPressed < 0.5f)
 		{
 			accelerationReduction += 1;
-			if (Input.GetKey(key)) transform.Translate(direction * (verticalDashMotion / accelerationReduction));
+			if (Input.GetKey(key)) transform.Translate(dashDirection * (dashMotion / accelerationReduction));
 			yield return new WaitForEndOfFrame();
 		}
 
@@ -459,14 +468,14 @@ public class Player : MonoBehaviour {
 			//Player becomes isNeither
 			isBearer = false;
 			isEscort = false;
-			isNeither = false;
+			isNeither = true;
 
 			//OtherPlayer becomes isNeither
 			otherPlayer.isBearer = false;
 			otherPlayer.isEscort = false;
 			otherPlayer.isNeither = true;
 
-			//gameWall.burdenDropped ();
+			gameWall.fatigueReached ();
 			return;
 		}
 
@@ -479,10 +488,27 @@ public class Player : MonoBehaviour {
 		}
 
 		//If a Bearer, deplete stamina
-		if (isBearer) stamina -= 1 + (gameWall.getDepletionRate());
+		if (isBearer) stamina -= 0.5f + (gameWall.getDepletionRate());
 
 		//If not a Bearer, increase stamina
 		else stamina++;
+	}
+
+	public float getStamina()
+	{
+		return stamina;	
+	}
+
+	//Sets the checkPointStamina to the Player's current stamina at the time
+	public void setCheckpointStamina(float newVal)
+	{
+		checkpointStamina = newVal;
+		isFatigued = false;
+	}
+
+	public void staminaToCheckpointVal()
+	{
+		stamina = checkpointStamina;
 	}
 
 	public bool getFatigue()
@@ -532,15 +558,62 @@ public class Player : MonoBehaviour {
 	}
 
 	void OnCollisionEnter(Collision other)
-	{
-		ContactPoint contact = other.contacts [0];
-		//transform.Translate(-contact.normal*2000*Time.deltaTime);
-		//transform.Translate(Vector3.Reflect(transform.position , -contact.normal) * Time.deltaTime);
+	{	
 		// Check if collided with 'Obstacle'. Adds collisionPenalty
 		if (other.gameObject.tag == "Obstacle") {
-			transform.Translate(Vector3.Reflect(transform.position , -contact.normal) * Time.deltaTime);	
+
+			isFlickering = true;
+			StartCoroutine ("FlickerPlayer");
+
+			//Decrease stamina on collision
+			stamina -= collisionCost;
 			addCollisionPenalty ();
 		}
+	}
+
+
+	IEnumerator FlickerPlayer()
+	{
+		var mat = gameObject.GetComponent<Renderer>().material;
+		var color = mat.color;
+
+		while (isFlickering)
+		{
+			canThrow = false;
+			var vignette = Camera.main.GetComponent<VignetteAndChromaticAberration>();
+			vignette.intensity = 0.35f;
+			mat.EnableKeyword("_ALPHATEST_ON");
+			mat.EnableKeyword("_ALPHABLEND_ON");
+			color.a = 0;
+			mat.color = color;
+		
+			yield return new WaitForSeconds(0.15f);
+			vignette.intensity = 0.23f;
+			mat.DisableKeyword("_ALPHATEST_ON");
+			mat.DisableKeyword("_ALPHABLEND_ON");
+			color.a = 1;
+			mat.color = color;
+		
+			yield return new WaitForSeconds(0.15f);
+		}
+
+
+	}
+
+	void OnCollisionExit(Collision other)
+	{
+		StartCoroutine("FlickerExtension", Time.time);
+	}
+
+	IEnumerator FlickerExtension(float timeHit)
+	{
+		while (Time.time - timeHit < 0.5f)
+		{
+			yield return null;
+		}
+
+		isFlickering = false;
+		canThrow = true;
 	}
 
 	void OnTriggerEnter(Collider other)

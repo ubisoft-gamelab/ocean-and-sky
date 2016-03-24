@@ -46,7 +46,6 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\CameraPosition.cs" />
-     <Compile Include="Assets\Fantasy Skybox FREE\Scripts\FSPlayer.cs" />
      <Compile Include="Assets\GemExample\Scripts\DemoTimeOfDay.cs" />
      <Compile Include="Assets\GemExample\Scripts\Orbit.cs" />
      <Compile Include="Assets\Scripts\AnimatedUVs.cs" />
@@ -54,11 +53,14 @@
      <Compile Include="Assets\Scripts\CameraBehaviour.cs" />
      <Compile Include="Assets\Scripts\FocalPoint.cs" />
      <Compile Include="Assets\Scripts\GameWall.cs" />
+     <Compile Include="Assets\Scripts\LowerObject.cs" />
      <Compile Include="Assets\Scripts\Obstacle.cs" />
      <Compile Include="Assets\Scripts\PlaneBehaviour.cs" />
      <Compile Include="Assets\Scripts\Player.cs" />
+     <Compile Include="Assets\Scripts\Pulse.cs" />
      <Compile Include="Assets\Scripts\SkyBoxCamera.cs" />
      <Compile Include="Assets\Scripts\StageFormation.cs" />
+     <Compile Include="Assets\Skies\Scripts\FSPlayer.cs" />
      <Compile Include="Assets\Underwater.cs" />
      <None Include="Assets\Standard Assets\Effects\GlassRefraction\Shaders\GlassStainedBumpDistort.shader" />
      <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\_BloomAndFlares\BlendOneOne.shader" />
@@ -108,7 +110,7 @@
      <None Include="Assets\Standard Assets\Effects\ToonShading\Shaders\ToonLit.shader" />
      <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\ColorCorrectionSelective.shader" />
      <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\_DepthOfField\Bokeh34.shader" />
-     <None Include="Assets\Fantasy Skybox FREE\Readme\Readme.txt" />
+     <None Include="Assets\Skies\Readme\Readme.txt" />
      <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\CameraMotionBlurDX11.shader" />
      <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\_BloomAndFlares\SeparableBlurPlus.shader" />
      <None Include="Assets\Standard Assets\Effects\Projectors\Shaders\ProjectorLight.shader" />
@@ -150,6 +152,9 @@
      <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\_Antialiasing\FXAAPreset2.shader" />
      <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\_BloomAndFlares\BlurAndFlares.shader" />
      <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\_BloomAndFlares\BlendForBloom.shader" />
+ <Reference Include="Assembly-UnityScript-firstpass">
+ <HintPath>/Users/Koga/Desktop/The File Of Requirement/forkRepo/ocean-and-sky/OceanAndSky/Library/ScriptAssemblies/Assembly-UnityScript-firstpass.dll</HintPath>
+ </Reference>
  <Reference Include="UnityEngine.UI">
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
