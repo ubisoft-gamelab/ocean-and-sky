@@ -106,6 +106,7 @@ public class Player : MonoBehaviour {
 		// Gets the SlipStream and initially sets it to inactive
 		slipStream = gameObject.transform.GetChild (0);
 		slipStream.GetComponent<BoxCollider> ().enabled = false;
+		transform.GetChild (1).gameObject.SetActive (false);
 
 		// Gets the RigidBody of Player. clamp velocity
 		rigidBody = GetComponent<Rigidbody> ();
@@ -434,6 +435,9 @@ public class Player : MonoBehaviour {
 		otherPlayer.isEscort = true;
 		otherPlayer.activateSlipStream ();
 
+		//Disable my SLipstream
+		deactivateSlipStream();
+
 	}
 
 	void throwBurden()
@@ -517,15 +521,17 @@ public class Player : MonoBehaviour {
 	}
 	
 	// Sets the SlipStream (Player's first child), to active 
-	void activateSlipStream()
+	public void activateSlipStream()
 	{
 		slipStream.GetComponent<BoxCollider> ().enabled = true;
+		transform.GetChild (1).gameObject.SetActive (true);
 	}
 
 	// Sets the SlipStream (Player's first child), to inactive 
-	void deactivateSlipStream()
+	public void deactivateSlipStream()
 	{
 		slipStream.GetComponent<BoxCollider> ().enabled = false;
+		transform.GetChild (1).gameObject.SetActive (false);
 	}
 		
 	// Repulse Player towards the right.
@@ -631,7 +637,7 @@ public class Player : MonoBehaviour {
 			}
 		}
 
-		// Check if there is a collision with a PushArtefact on the ride side of the screen
+		// Check if there is a collision with a PushArtefact on the right side of the screen
 		if (other.gameObject.tag == "PushArtefactRight") 
 		{
 			// Check if Player 1 is the Bearer and is inSlipStream

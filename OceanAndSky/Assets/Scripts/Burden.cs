@@ -136,6 +136,8 @@ public class Burden : MonoBehaviour {
 	public void restorePosition()
 	{
 		transform.position = restPosition;
+		P1.deactivateSlipStream ();
+		P2.deactivateSlipStream ();
 	}
 
 	// Force that propels Burden forwards when throwInput is pressed 
