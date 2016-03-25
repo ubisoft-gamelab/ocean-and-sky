@@ -406,4 +406,9 @@ public class GameWall : MonoBehaviour {
 	{
 		artefactForce = 1f;
 	}
+	public void exitGame(int level)
+    	{
+        	Debug.Log("hI");
+        	Application.LoadLevel(level);
+    	}
 }
