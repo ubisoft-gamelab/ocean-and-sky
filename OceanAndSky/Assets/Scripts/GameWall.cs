@@ -62,9 +62,6 @@ public class GameWall : MonoBehaviour {
 	float sixthThreshold;
 	float speedOfSound;
 
-	float levelCapOne;
-	float levelCapTwo;
-
 	public float fatiguedVelocity;
 	public float checkPointVelocity;
 
@@ -93,18 +90,16 @@ public class GameWall : MonoBehaviour {
 		sixthThreshold = 4500;
 		speedOfSound = 4750;
 
-		levelCapOne = 8;
-		levelCapTwo = 8;
 
-
-		transitVelocity = 2800f;
+		transitVelocity = 2930;
 		sectionTwoVelocity = 3000f;
 		sectionThreeVelocity = 4500f;
 
 		//Set sectionOne to true initially
-		sectionOne = false;
-		sectionTwo = true;
+		sectionOne = true;
+		sectionTwo = false;
 		transitSection = false;
+		sectionThree = false;
 
 		hasReachedCheckpointOne = false;
 		hasReachedCheckpointTwo = false;
@@ -146,7 +141,7 @@ public class GameWall : MonoBehaviour {
 
 		if (Input.GetKey(checkpointInput)) activateCheckPoint ();
 
-		/*
+
 		if (planeOne.getMaxVelocity () > transitVelocity && planeOne.getMaxVelocity() < sectionTwoVelocity)
 		{
 			sectionOne = false;
@@ -171,17 +166,8 @@ public class GameWall : MonoBehaviour {
 			sectionThree = true;
 			transitSection = false;
 		}
-			*/
+			
 
-		//Ends the game if greater or equal to max velocity
-		if (planeOne.getMaxVelocity () > speedOfSound) 
-		{
-			//TODO: End the game.
-
-			//Kill all audio
-			//Something happens to players
-			//Something happens to Burden
-		}
 
 
 		// If the alert is received, load a new random stage formation
@@ -194,17 +180,21 @@ public class GameWall : MonoBehaviour {
 	}
 
 
+	public void endGame()
+	{
+		
+	}
 
 	// Get a new random stageFormation
 	void setStagePart()
 	{
 		if (sectionOne) {
-			stagePartIndex = (int)Random.Range (0, levelCapOne);
+			stagePartIndex = (int)Random.Range (0, levelDesignOne.transform.childCount);
 			levelDesignOne.transform.GetChild (stagePartIndex).gameObject.SetActive (true);
 			levelDesignOne.transform.GetChild (stagePartIndex).GetComponent<StageFormation> ().selectedPart = true;
 			updateStage = false;
 
-			//burden.aiAgent (1, stagePartIndex);
+			burden.aiAgent (1, stagePartIndex);
 		} 
 
 		else if (transitSection) 
@@ -220,14 +210,14 @@ public class GameWall : MonoBehaviour {
 
 		else if (sectionTwo) {
 
-			//stagePartIndex = (int)Random.Range (1, levelCapTwo);
+			stagePartIndex = (int)Random.Range (1, levelDesignTwo.transform.childCount);
 
-			stagePartIndex = 8;
+			//stagePartIndex = 14;
 			levelDesignTwo.transform.GetChild (stagePartIndex).gameObject.SetActive (true);
 			levelDesignTwo.transform.GetChild (stagePartIndex).GetComponent<StageFormation> ().selectedPart = true;
 			updateStage = false;
 
-			//burden.aiAgent (2, stagePartIndex);
+			burden.aiAgent (2, stagePartIndex);
 		} 
 
 		else if (sectionThree) 
@@ -240,7 +230,7 @@ public class GameWall : MonoBehaviour {
 			//stagePart3Index = 1;
 			SkyBoxCamera.ChangeSkyboxDSBWP ();
 
-			//burden.aiAgent (3, stagePartIndex);
+			burden.aiAgent (3, stagePartIndex);
 		}
 
 		//TODO If maxVelocity has reached a threshold, increase difficulty slightly. Store checkpoint
@@ -305,13 +295,12 @@ public class GameWall : MonoBehaviour {
 			return;
 		else 
 		{
-			depletionRate += 0.2f;
+			depletionRate += 0.5f;
 			checkPointVelocity = firstThreshold;
 			fatiguedVelocity = checkPointVelocity / 2;
 			P1.setCheckpointStamina (45);
 			P2.setCheckpointStamina (45);
-
-			levelCapOne = 8;
+		
 			hasReachedCheckpointOne = true;;
 		}
 	}
@@ -322,12 +311,11 @@ public class GameWall : MonoBehaviour {
 			return;
 		else 
 		{
-			depletionRate += 0.2f;
+			depletionRate += 0.5f;
 			checkPointVelocity = secondThreshold;
 			fatiguedVelocity = checkPointVelocity / 2;
 			P1.setCheckpointStamina (40);
 			P2.setCheckpointStamina (40);
-			levelCapOne = levelDesignOne.transform.childCount;
 			hasReachedCheckpointTwo = true;;
 		}
 	}
@@ -338,13 +326,12 @@ public class GameWall : MonoBehaviour {
 			return;
 		else 
 		{
-			depletionRate += 0.2f;
+			depletionRate += 0.5f;
 			checkPointVelocity = thirdThreshold;
 			fatiguedVelocity = checkPointVelocity / 2;
 			P1.setCheckpointStamina (35);
 			P2.setCheckpointStamina (35);
 
-			levelCapTwo = 6;
 			hasReachedCheckpointThree = true;
 		}
 	}
@@ -355,13 +342,12 @@ public class GameWall : MonoBehaviour {
 			return;
 		else 
 		{
-			depletionRate += 0.2f;
+			depletionRate += 0.5f;
 			checkPointVelocity = fourthThreshold;
 			fatiguedVelocity = checkPointVelocity / 2;
 			P1.setCheckpointStamina (30);
 			P2.setCheckpointStamina (30);
-
-			levelCapTwo = 10;
+	
 			hasReachedCheckpointFour = true;
 		}
 	}
@@ -372,12 +358,11 @@ public class GameWall : MonoBehaviour {
 			return;
 		else 
 		{
-			depletionRate += 0.2f;
+			depletionRate += 0.5f;
 			checkPointVelocity = fifthThreshold;
 			fatiguedVelocity = checkPointVelocity / 2;
 			P1.setCheckpointStamina (20);
 			P2.setCheckpointStamina (20);
-			levelCapTwo = levelDesignTwo.transform.childCount;
 			hasReachedCheckpointFive = true;
 		}
 	}

@@ -152,7 +152,7 @@ public class Player : MonoBehaviour {
 			leftInput = KeyCode.LeftArrow;
 			rightInput = KeyCode.RightArrow;
 			catchInput = KeyCode.RightShift;
-			throwInput = KeyCode.P;
+			throwInput = KeyCode.LeftShift;
 			dashInput = KeyCode.Space;
 		} 
 
@@ -714,6 +714,9 @@ public class Player : MonoBehaviour {
 
 		//If in Burden's collider, set canCatch to true
 		if (other.gameObject.name == "Burden") canCatch = true;
+
+		if (other.gameObject.name == "SpeedOfSound")
+			gameWall.endGame ();
 
 
 	}

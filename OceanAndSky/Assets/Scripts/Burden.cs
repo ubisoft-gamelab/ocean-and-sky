@@ -168,38 +168,59 @@ public class Burden : MonoBehaviour {
 		//TODO Have Burden dynamically interact with Players depending on exactly which Stage Part is coming next
 		if (sectionIndex == 1) 
 		{
-			//if()
-			//else if()
-			/*else
+			if (stageIndex == 10)
+				rend.material = pullMaterial;
+			else if (stageIndex == 11)
+				rend.material = pushMaterial;
+			else if (stageIndex == 12)
+				rend.material = pushMaterial;
+			else if (stageIndex == 13)
+				rend.material = pullMaterial;
+			else if (stageIndex == 14)
+				rend.material = pushMaterial;
+			else
 			{
 				rend.material = standardMaterial;
-			}*/
-			//Respond based on stageIndex
-			rend.material = pullMaterial;	
+			}
+		
 		}
 
 		if (sectionIndex == 2) 
 		{
-			//if()
-			//else if()
-			/*else
+			if (stageIndex == 1)
+				rend.material = pullMaterial;
+			else if (stageIndex == 2)
+				rend.material = pullMaterial;
+			else if (stageIndex == 3)
+				rend.material = pushMaterial;
+			else if (stageIndex == 4)
+				rend.material = pushMaterial;
+			else if (stageIndex == 5)
+				rend.material = pushMaterial;
+			else if (stageIndex == 6)
+				rend.material = pullMaterial;
+			else if (stageIndex == 7)
+				rend.material = pullMaterial;
+			else if (stageIndex == 8)
+				rend.material = pushMaterial;
+			else if (stageIndex == 11)
+				rend.material = pullMaterial;
+			else if (stageIndex == 11)
+				rend.material = pullMaterial;
+			else if (stageIndex == 13)
+				rend.material = pushMaterial;
+			else if (stageIndex == 14)
+				rend.material = pushMaterial;
+			else
 			{
 				rend.material = standardMaterial;
-			}*/
-			//Respond based on stageIndex
-			rend.material = pushMaterial;
+			}
 		}
 
 		if (sectionIndex == 3) 
 		{
-			//if()
-			//else if()
-			/*else
-			{
-				rend.material = standardMaterial;
-			}*/
-			//Respond based on stageIndex
-			rend.material = standardMaterial;
+			
+			rend.material = pullMaterial;
 		}
 
 	}
