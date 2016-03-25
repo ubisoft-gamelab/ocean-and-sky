@@ -8,8 +8,14 @@ using System.Collections;
  */
 public class Burden : MonoBehaviour {
 
-	public Player P1;
-	public Player P2;
+	Material[] materials;
+	Material pullMaterial;
+	Material standardMaterial;
+	Material pushMaterial;
+	Renderer rend;
+
+	Player P1;
+	Player P2;
 
 	public GameWall gameWall; 
 
@@ -30,6 +36,21 @@ public class Burden : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 
+		P1 = GameObject.Find ("FirstPlayer").GetComponent<Player> ();
+		P2 = GameObject.Find ("SecondPlayer").GetComponent<Player> ();
+
+		materials = Resources.LoadAll<Material>("BurdenMaterials");
+		rend = GetComponent<MeshRenderer> ();
+		foreach( Material mat in materials)
+		{
+			if (mat.name == "PullMaterial") pullMaterial = mat;
+			else if (mat.name == "PushMaterial") pushMaterial = mat;
+			else if (mat.name == "StandardMaterial") standardMaterial = mat;
+		}
+
+		rend.enabled = true;
+
+
 
 		weight = 25;
 		minHeight = 30;
@@ -40,13 +61,14 @@ public class Burden : MonoBehaviour {
 		forwardForce = 250f;
 		upForce = 150f;
 
-		restPosition = new Vector3 (3330, minHeight, -4600f);
+		restPosition = new Vector3 (3330f, 130f, -4600f);
 
 	}
 
 	// Update is called once per frame
 	void Update () {
 	
+		restPosition.x = transform.position.x;
 		gravity ();
 
 		// TODO Implement cleaner, more reliable way to throw the Burden
@@ -56,6 +78,7 @@ public class Burden : MonoBehaviour {
 			forwardForce -= 5;
 			upForce -= 5;
 		}
+
 
 		if (isAtRest) restorePosition();
 	}
@@ -109,13 +132,15 @@ public class Burden : MonoBehaviour {
 	{
 		isHeld = false;
 		GetComponent<SphereCollider> ().enabled = true;
-		isAtRest = false;
+		//isAtRest = false;
 
 	}
 
-	void restorePosition()
+	public void restorePosition()
 	{
 		transform.position = restPosition;
+		P1.deactivateSlipStream ();
+		P2.deactivateSlipStream ();
 	}
 
 	// Force that propels Burden forwards when throwInput is pressed 
@@ -138,9 +163,45 @@ public class Burden : MonoBehaviour {
 
 	}
 
-	void aiAgent()
+	public void aiAgent(int sectionIndex, int stageIndex)
 	{
 		//TODO Have Burden dynamically interact with Players depending on exactly which Stage Part is coming next
+		if (sectionIndex == 1) 
+		{
+			//if()
+			//else if()
+			/*else
+			{
+				rend.material = standardMaterial;
+			}*/
+			//Respond based on stageIndex
+			rend.material = pullMaterial;	
+		}
+
+		if (sectionIndex == 2) 
+		{
+			//if()
+			//else if()
+			/*else
+			{
+				rend.material = standardMaterial;
+			}*/
+			//Respond based on stageIndex
+			rend.material = pushMaterial;
+		}
+
+		if (sectionIndex == 3) 
+		{
+			//if()
+			//else if()
+			/*else
+			{
+				rend.material = standardMaterial;
+			}*/
+			//Respond based on stageIndex
+			rend.material = standardMaterial;
+		}
+
 	}
 
 	//Getter for isAtRest

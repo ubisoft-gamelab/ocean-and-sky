@@ -11,6 +11,8 @@ using System.Collections;
  */
 public class PlaneBehaviour : MonoBehaviour {
 	
+	public PlaneBehaviour otherPlane;
+
 	public Player P1;
 	public Player P2;
 
@@ -20,8 +22,6 @@ public class PlaneBehaviour : MonoBehaviour {
 	bool hasCollided;
 	bool isMaxVelocity;
 
-	Vector3 currentPosition;
-
 	float planeLength;
 	float maxVelocity;
 	float resetPosition;
@@ -29,10 +29,8 @@ public class PlaneBehaviour : MonoBehaviour {
 	
 	void Start () {
 		
-		maxVelocity = 900f;
-		resetPosition = -1630f;
-
-		currentPosition = transform.position;
+		maxVelocity = 1500f;
+		resetPosition = otherPlane.transform.position.z;// + 10000f;
 
 		// Call increaseMaxVelocity() on the first second of gameplay, and every five seconds after.
 		InvokeRepeating ("increaseMaxVelocity", 1f, 5f);
@@ -40,7 +38,7 @@ public class PlaneBehaviour : MonoBehaviour {
 	}
 		
 	void Update () {
-
+		resetPosition = otherPlane.transform.position.z + 4500f;
 		/** Constantly move the plane forward **/
 		move ();
 	}
@@ -51,7 +49,7 @@ public class PlaneBehaviour : MonoBehaviour {
 	 */ 
 	void popForward()
 	{
-		transform.position = new Vector3(currentPosition.x, currentPosition.y, resetPosition);
+		transform.position = new Vector3 (transform.position.x, transform.position.y, resetPosition);
 	}
 
 	 // Moves the Plane forward incrementally by every frame
@@ -66,7 +64,6 @@ public class PlaneBehaviour : MonoBehaviour {
 	 */
 	public void increaseMaxVelocity()
 	{
-		Debug.Log ("Velocity is : " + maxVelocity);
 		//If Burden is at rest or if either Player has collided recently, do not increment maxVelocity
 		if((P1.getCollisionPenalty() > 0) || P2.getCollisionPenalty() > 0 || burden.isResting())
 		{
@@ -80,8 +77,7 @@ public class PlaneBehaviour : MonoBehaviour {
 		}
 
 
-		maxVelocity += 90;
-		Debug.Log ("Increased Velocity");
+		maxVelocity += 100;
 	}
 
 	public float getMaxVelocity()

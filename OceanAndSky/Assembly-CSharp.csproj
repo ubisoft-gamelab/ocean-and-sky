@@ -45,6 +45,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\CameraPosition.cs" />
      <Compile Include="Assets\Fantasy Skybox FREE\Scripts\FSPlayer.cs" />
      <Compile Include="Assets\GemExample\Scripts\DemoTimeOfDay.cs" />
      <Compile Include="Assets\GemExample\Scripts\Orbit.cs" />
@@ -53,9 +54,11 @@
      <Compile Include="Assets\Scripts\CameraBehaviour.cs" />
      <Compile Include="Assets\Scripts\FocalPoint.cs" />
      <Compile Include="Assets\Scripts\GameWall.cs" />
+     <Compile Include="Assets\Scripts\LowerObject.cs" />
      <Compile Include="Assets\Scripts\Obstacle.cs" />
      <Compile Include="Assets\Scripts\PlaneBehaviour.cs" />
      <Compile Include="Assets\Scripts\Player.cs" />
+     <Compile Include="Assets\Scripts\Pulse.cs" />
      <Compile Include="Assets\Scripts\SkyBoxCamera.cs" />
      <Compile Include="Assets\Scripts\StageFormation.cs" />
      <Compile Include="Assets\Underwater.cs" />
