@@ -20,7 +20,7 @@ public class FocalPoint : MonoBehaviour {
 		//endPos.y = 61f;
 		endPos.z = -4600f;
 		transform.position = endPos;	}
-	
+
 	// Update is called once per frame
 	void Update () {
 		endPos.x = Mathf.Abs(P1.gameObject.transform.position.x + P2.gameObject.transform.position.x) * 0.5f;

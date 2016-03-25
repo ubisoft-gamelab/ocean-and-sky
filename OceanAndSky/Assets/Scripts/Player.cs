@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 using UnityStandardAssets.ImageEffects;
 
 
@@ -12,6 +13,22 @@ using UnityStandardAssets.ImageEffects;
  * 
  */
 public class Player : MonoBehaviour {
+	//this controls the health UI
+	public Slider staminaSlider;
+
+	//tired af
+	public Image tiredImage;
+	public Color flashColor = new Color(1f,0f,0f,.1f);
+	public float flashSpeed = 5f;
+
+	//audio
+	public AudioClip throwSound;
+	public AudioClip crashWall;
+	public AudioClip staminaWarning;
+	public AudioClip catchSound;
+
+	private AudioSource source;
+
 
 	public Player otherPlayer;
 	public Burden burden;
@@ -45,8 +62,8 @@ public class Player : MonoBehaviour {
 	bool isFatigued;
 	bool isDashing;
 	bool inSlipStream;
-	bool hitPushArtefactLeft;
-	bool hitPushArtefactRight;
+	public bool hitPushArtefactLeft;
+	public bool hitPushArtefactRight;
 	bool isFlickering;
 
 	float forwardPosition;
@@ -74,8 +91,8 @@ public class Player : MonoBehaviour {
 	bool maxPenalty;
 
 
-    // Use this for initialization
-    void Start () {
+	// Use this for initialization
+	void Start () {
 
 		dashDirection = Vector3.zero;
 		collisionPenalty = 1;
@@ -88,7 +105,7 @@ public class Player : MonoBehaviour {
 		eps = 40f;
 
 		// Positions where Player is sent to when Escort, Bearer or Neither
-		forwardPosition = -4500f;
+		forwardPosition = -4550f;
 		middlePosition = -4600f;
 		rearPosition = -4700f;
 
@@ -150,14 +167,18 @@ public class Player : MonoBehaviour {
 			dashInput = KeyCode.R;
 		}
 
-		 
+
 		// Decrement the collisionPenalty every two seconds
 		InvokeRepeating ("minusCollisionPenalty", 1f, 2f);
 
 		// Decrement Stamina for every second the Player is Bearer
 		InvokeRepeating ("updateStamina", 1f, 1f);
 	}
-	
+
+	void Awake(){
+		source = GetComponent<AudioSource> ();
+	}
+
 	// Update is called once per frame
 	void Update () {
 
@@ -197,14 +218,14 @@ public class Player : MonoBehaviour {
 		//Handle Player position based on isBearer, isEscort or isNeither
 		handlePosition ();
 	}
-		
+
 
 	// Increment collisionPenalty when colliding with object
 	public void addCollisionPenalty()
 	{
 		//If at maxPenalty, do not increment penaly counter any more.
 		if (maxPenalty) return;
-	
+
 		collisionPenalty += 1;
 	}
 
@@ -213,7 +234,7 @@ public class Player : MonoBehaviour {
 	public void minusCollisionPenalty()
 	{
 		collisionPenalty --;
-	
+
 		if (collisionPenalty <= 0) 
 		{
 			maxPenalty = false;
@@ -265,7 +286,7 @@ public class Player : MonoBehaviour {
 		/// UPInput Handler
 		if (Input.GetKey(upInput)) 
 		{ 
-			
+
 			if ((transform.position.y <= maxHeight-eps) && Input.GetKeyDown(dashInput) && !isDashing)
 			{
 				stamina -= dashCost;
@@ -438,6 +459,9 @@ public class Player : MonoBehaviour {
 		//Disable my SLipstream
 		deactivateSlipStream();
 
+		//catch audio
+		source.PlayOneShot(catchSound,.5f);
+
 	}
 
 	void throwBurden()
@@ -455,6 +479,9 @@ public class Player : MonoBehaviour {
 		//Set burden.isThrown to true;
 		burden.setThrown();
 
+		///throw Audio
+		source.PlayOneShot (throwSound, 0.5f);
+
 	}
 
 	void updateStamina()
@@ -463,6 +490,7 @@ public class Player : MonoBehaviour {
 		if (stamina < 0) 
 		{
 			stamina = 0;
+			staminaSlider.value = stamina;
 			isFatigued = true;
 
 			// Burden is no longer the child of either Player
@@ -483,19 +511,33 @@ public class Player : MonoBehaviour {
 			return;
 		}
 
+		//warning, stamina almost out
+		if (stamina < 10 && isBearer) {
+			//Out of stamina audio
+			source.PlayOneShot (staminaWarning, 0.5f);
+			//flash tired colout
+			tiredImage.color = flashColor;
+			tiredImage.color = Color.Lerp (tiredImage.color, Color.clear, flashSpeed * Time.deltaTime);
+		} 
+
 		//If fully replenished, bound stamina to 50
 		if (stamina > 50) 
 		{
 			stamina = 50;
+			staminaSlider.value = stamina;
 			isFatigued = false;
 			return;
 		}
 
 		//If a Bearer, deplete stamina
-		if (isBearer) stamina -= 0.5f + (gameWall.getDepletionRate());
-
+		if (isBearer) {
+			stamina -= 0.5f + (gameWall.getDepletionRate ());
+			staminaSlider.value = stamina;
+		}
 		//If not a Bearer, increase stamina
 		else stamina++;
+
+		staminaSlider.value = stamina;
 	}
 
 	public float getStamina()
@@ -519,7 +561,7 @@ public class Player : MonoBehaviour {
 	{
 		return isFatigued;
 	}
-	
+
 	// Sets the SlipStream (Player's first child), to active 
 	public void activateSlipStream()
 	{
@@ -533,7 +575,7 @@ public class Player : MonoBehaviour {
 		slipStream.GetComponent<BoxCollider> ().enabled = false;
 		transform.GetChild (1).gameObject.SetActive (false);
 	}
-		
+
 	// Repulse Player towards the right.
 	void repulseRight()
 	{
@@ -574,13 +616,14 @@ public class Player : MonoBehaviour {
 			//Decrease stamina on collision
 			stamina -= collisionCost;
 			addCollisionPenalty ();
+			source.PlayOneShot (crashWall, 0.5f);
 		}
 	}
 
 
 	IEnumerator FlickerPlayer()
 	{
-		var mat = transform.GetChild (3).GetComponent<SkinnedMeshRenderer> ().material;
+		var mat = transform.GetChild (2).GetComponent<SkinnedMeshRenderer> ().material;
 		//var mat = gameObject.GetComponent<Renderer>().material;
 		var color = mat.color;
 
@@ -593,14 +636,14 @@ public class Player : MonoBehaviour {
 			mat.EnableKeyword("_ALPHABLEND_ON");
 			color.a = 0;
 			mat.color = color;
-		
+
 			yield return new WaitForSeconds(0.15f);
 			vignette.intensity = 0.23f;
 			mat.DisableKeyword("_ALPHATEST_ON");
 			mat.DisableKeyword("_ALPHABLEND_ON");
 			color.a = 1;
 			mat.color = color;
-		
+
 			yield return new WaitForSeconds(0.15f);
 		}
 
@@ -625,7 +668,7 @@ public class Player : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other)
 	{
-	
+
 		// Check if there is collision with a PushArtefact on the left side of the screen
 		if (other.gameObject.tag == "PushArtefactLeft") 
 		{
@@ -669,7 +712,7 @@ public class Player : MonoBehaviour {
 
 		//If in Burden's collider, set canCatch to true
 		if (other.gameObject.name == "Burden") canCatch = true;
-		
+
 
 	}
 
@@ -677,7 +720,7 @@ public class Player : MonoBehaviour {
 	{
 		// If Player leaves Burden collider, can no longer catch
 		if (other.gameObject.name == "Burden") canCatch = false;
-		
+
 
 		// If Player leaves Slipstream, can no longer throw
 		if (other.gameObject.name == "SlipStream") 

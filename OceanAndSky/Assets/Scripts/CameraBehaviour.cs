@@ -27,7 +27,7 @@ public class CameraBehaviour : MonoBehaviour {
 		camPos = Camera.main.transform.position;
 		originalPos = camPos;
 	}
-	
+
 	// LateUpdate to smoothen movement 
 	void LateUpdate () {
 
@@ -44,7 +44,7 @@ public class CameraBehaviour : MonoBehaviour {
 		//handleFollow ();
 
 	}
-		
+
 
 	void handleFollow()
 	{
@@ -57,5 +57,5 @@ public class CameraBehaviour : MonoBehaviour {
 		}
 		Camera.main.fieldOfView = Mathf.Lerp(Camera.main.fieldOfView, zoom, 0.1f);
 	}
-		
+
 }

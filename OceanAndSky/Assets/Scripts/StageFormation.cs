@@ -28,10 +28,10 @@ public class StageFormation : MonoBehaviour {
 		P2 = GameObject.Find ("SecondPlayer").GetComponent<Player> ();
 
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
-	
+
 		// Moves stageFormation if it has been selected by gameWall
 		if (selectedPart) 
 		{
@@ -39,12 +39,12 @@ public class StageFormation : MonoBehaviour {
 		}
 
 		// Else, deactivate the stageFormation
-			//else gameObject.SetActive (false);
+		//else gameObject.SetActive (false);
 
 
 	}
 
-	 
+
 	//Pops the Plane forward to the resetPosition after colliding with gameWall
 	void popForward()
 	{
@@ -61,7 +61,7 @@ public class StageFormation : MonoBehaviour {
 			transform.Translate (Vector3.left * Time.deltaTime * firstPlane.getMaxVelocity () * 0.9f * gameWall.getArtefactForce ());
 		}
 	}
-		
+
 
 	void OnTriggerStay(Collider other)
 	{
@@ -72,17 +72,17 @@ public class StageFormation : MonoBehaviour {
 		 */
 		if (other.gameObject.name == "GameWall") {
 
-				//Reset any changes to ArtefactForces
-				gameWall.resetArtefactForce ();
-				P1.resetArtefactProperties ();
-				P2.resetArtefactProperties ();
+			//Reset any changes to ArtefactForces
+			gameWall.resetArtefactForce ();
+			P1.resetArtefactProperties ();
+			P2.resetArtefactProperties ();
 
-				//Move the stageFormation fowards
-				popForward ();
+			//Move the stageFormation fowards
+			popForward ();
 
-				//Increase maxVelocity
-				firstPlane.increaseMaxVelocity ();
-				secondPlane.increaseMaxVelocity ();
+			//Increase maxVelocity
+			firstPlane.increaseMaxVelocity ();
+			secondPlane.increaseMaxVelocity ();
 
 			if (gameObject.name == "Transition : Clouds") {
 				gameWall.updateGame (0);
@@ -92,10 +92,8 @@ public class StageFormation : MonoBehaviour {
 			}
 
 
-				selectedPart = false;
-				gameObject.SetActive (false);
+			selectedPart = false;
+			gameObject.SetActive (false);
 		}
 	}
 }
-
-

@@ -67,7 +67,7 @@ public class Burden : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-	
+
 		restPosition.x = transform.position.x;
 		gravity ();
 
@@ -84,7 +84,7 @@ public class Burden : MonoBehaviour {
 	}
 
 
-	
+
 	void gravity()
 	{
 		//Do not apply gravity if isHeld by Player

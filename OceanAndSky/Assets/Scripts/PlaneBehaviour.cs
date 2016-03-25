@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 /**
  * Class which moves Planes forwards to give the impression of motion in the game state.
@@ -10,7 +11,11 @@ using System.Collections;
  * MaxVelocity never goes down.
  */
 public class PlaneBehaviour : MonoBehaviour {
-	
+
+	//Velocity UI
+	public Slider velocityDisplay;
+	public Text velocityValue;
+
 	public PlaneBehaviour otherPlane;
 
 	public Player P1;
@@ -26,23 +31,23 @@ public class PlaneBehaviour : MonoBehaviour {
 	float maxVelocity;
 	float resetPosition;
 
-	
+
 	void Start () {
-		
+
 		maxVelocity = 1500f;
 		resetPosition = otherPlane.transform.position.z;// + 10000f;
 
 		// Call increaseMaxVelocity() on the first second of gameplay, and every five seconds after.
 		InvokeRepeating ("increaseMaxVelocity", 1f, 5f);
-		
+
 	}
-		
+
 	void Update () {
 		resetPosition = otherPlane.transform.position.z + 4500f;
 		/** Constantly move the plane forward **/
 		move ();
 	}
-	
+
 	/** 
 	 * Pops the Plane forward on the X-axis to the resetPosition, after Player has left the 
 	 * Plane's box collider
@@ -52,7 +57,7 @@ public class PlaneBehaviour : MonoBehaviour {
 		transform.position = new Vector3 (transform.position.x, transform.position.y, resetPosition);
 	}
 
-	 // Moves the Plane forward incrementally by every frame
+	// Moves the Plane forward incrementally by every frame
 	public void move()
 	{
 		transform.Translate (Vector3.back * Time.deltaTime * maxVelocity);
@@ -78,6 +83,9 @@ public class PlaneBehaviour : MonoBehaviour {
 
 
 		maxVelocity += 100;
+		//slider
+		velocityValue.text = "Velocity:" + maxVelocity.ToString();
+		velocityDisplay.value = maxVelocity;
 	}
 
 	public float getMaxVelocity()

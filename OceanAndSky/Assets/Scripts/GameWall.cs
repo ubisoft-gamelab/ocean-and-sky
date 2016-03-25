@@ -138,7 +138,7 @@ public class GameWall : MonoBehaviour {
 		stagePart3Index = 0;
 		updateStage = true;
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
 
@@ -181,7 +181,7 @@ public class GameWall : MonoBehaviour {
 			//Something happens to players
 			//Something happens to Burden
 		}
-			
+
 
 		// If the alert is received, load a new random stage formation
 		if (updateStage) 
@@ -219,7 +219,7 @@ public class GameWall : MonoBehaviour {
 
 
 		else if (sectionTwo) {
-			
+
 			stagePartIndex = (int)Random.Range (1, levelCapTwo);
 
 			//stagePartIndex = 0;
@@ -252,7 +252,7 @@ public class GameWall : MonoBehaviour {
 	{
 		updateStage = true;
 	}
-		
+
 	public void updateGame(int flag)
 	{
 		hiddenPosition1 = new Vector3 (planeOne.transform.position.x, -50000, planeOne.transform.position.z);
