@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class pauseManager : MonoBehaviour {
@@ -10,6 +10,7 @@ public class pauseManager : MonoBehaviour {
 
 	//Game pause UI
 	public GameObject pausePanel;
+	public GameObject exitButton;
 	bool isPaused;
 
 	// Use this for initialization
@@ -41,12 +42,14 @@ public class pauseManager : MonoBehaviour {
 		//Paused
 		if (state) {
 			pausePanel.SetActive (true);
-			Time.timeScale = 0.0f;
-		} 
+			Time.timeScale = 0.000000000000000001f;
+            exitButton.SetActive(true);
+        } 
 		//Unpause
 		else {
 			Time.timeScale = 1f;
 			pausePanel.SetActive (false);
+            exitButton.SetActive(false);
 		}
 	}
 	public void SwitchPause(){
