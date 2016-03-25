@@ -58,7 +58,7 @@ public class Burden : MonoBehaviour {
 		isHeld = false;
 		isAtRest = true; //isAtRest when Burden returns to minHeight
 
-		forwardForce = 250f;
+		forwardForce = 225f;
 		upForce = 150f;
 
 		restPosition = new Vector3 (3330f, 130f, -4600f);
@@ -120,7 +120,7 @@ public class Burden : MonoBehaviour {
 		parentPosition = gameObject.transform.parent.position;
 
 		//Move Burden to slightly behind parent
-		transform.position = new Vector3 (parentPosition.x, parentPosition.y, parentPosition.z-40);
+		transform.position = new Vector3 (parentPosition.x, parentPosition.y+55, parentPosition.z);
 	}
 
 	/*

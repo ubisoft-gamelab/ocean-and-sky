@@ -12,11 +12,12 @@ public class SkyBoxCamera : MonoBehaviour {
 
 	private static Material[] materials;
 	private static Skybox skybox;
+	static float rotateRate;
 
 	void Start () {
 		//Located in Assets/Resources/Materials
 		materials = Resources.LoadAll<Material>("Materials");
-
+		rotateRate = 0.2f;
 		skybox = GetComponent<Skybox>();
 
 	}
@@ -25,7 +26,7 @@ public class SkyBoxCamera : MonoBehaviour {
 	void Update () {
 
 		//Slowly rotate skybox
-		gameObject.transform.Rotate (Vector3.right*Time.deltaTime*0.2f);
+		gameObject.transform.Rotate (Vector3.right*Time.deltaTime*rotateRate);
 
 
 
@@ -39,7 +40,7 @@ public class SkyBoxCamera : MonoBehaviour {
 			if (materials[x].name == "NightB")
 			{
 				skybox.material = materials[x];
-				Debug.Log("Changing skybox");
+				rotateRate = -0.5f;
 			}
 		}
 
@@ -53,6 +54,7 @@ public class SkyBoxCamera : MonoBehaviour {
 			if (materials[x].name == "DSBWP")
 			{
 				skybox.material = materials[x];
+				rotateRate = -0.9f;
 			}
 		}
 	}

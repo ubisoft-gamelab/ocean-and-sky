@@ -82,7 +82,7 @@ public class PlaneBehaviour : MonoBehaviour {
 		}
 
 
-		maxVelocity += 100;
+		maxVelocity += 15;
 		//slider
 		velocityValue.text = "Velocity:" + maxVelocity.ToString();
 		velocityDisplay.value = maxVelocity;

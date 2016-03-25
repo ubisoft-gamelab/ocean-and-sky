@@ -183,8 +183,8 @@ public class Player : MonoBehaviour {
 	void Update () {
 
 		//Make motion of player scale by maxVelocity 
-		verticalMotion = 0.10f * planeOne.getMaxVelocity();
-		horizontalMotion = 0.10f * planeOne.getMaxVelocity ();
+		verticalMotion = 0.19f * planeOne.getMaxVelocity();
+		horizontalMotion = 0.15f * planeOne.getMaxVelocity ();
 
 		dashMotion = 7f * verticalMotion;
 
@@ -703,12 +703,14 @@ public class Player : MonoBehaviour {
 			}
 		}
 
+		//If inSlipStream, set inSlipStream to true
+		if (other.gameObject.name == "SlipStream") inSlipStream = true;
 	}
 
 	void OnTriggerStay(Collider other)
 	{
 		//If inSlipStream, set inSlipStream to true
-		if (other.gameObject.name == "SlipStream") inSlipStream = true;
+		//if (other.gameObject.name == "SlipStream") inSlipStream = true;
 
 		//If in Burden's collider, set canCatch to true
 		if (other.gameObject.name == "Burden") canCatch = true;

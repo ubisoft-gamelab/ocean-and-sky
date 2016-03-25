@@ -23,7 +23,16 @@ public class StageFormation : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 
-		resetPosition = 3500f;
+		if (gameObject.name == "One-10" || gameObject.name == "One-11" || gameObject.name == "One-12"
+			|| gameObject.name == "One-13") {
+			resetPosition = 12000;
+		} 
+
+		else 
+		{
+			resetPosition = 5500f;
+		}
+
 		P1 = GameObject.Find ("FirstPlayer").GetComponent<Player> ();
 		P2 = GameObject.Find ("SecondPlayer").GetComponent<Player> ();
 

@@ -102,8 +102,8 @@ public class GameWall : MonoBehaviour {
 		sectionThreeVelocity = 4500f;
 
 		//Set sectionOne to true initially
-		sectionOne = true;
-		sectionTwo = false;
+		sectionOne = false;
+		sectionTwo = true;
 		transitSection = false;
 
 		hasReachedCheckpointOne = false;
@@ -146,6 +146,7 @@ public class GameWall : MonoBehaviour {
 
 		if (Input.GetKey(checkpointInput)) activateCheckPoint ();
 
+		/*
 		if (planeOne.getMaxVelocity () > transitVelocity && planeOne.getMaxVelocity() < sectionTwoVelocity)
 		{
 			sectionOne = false;
@@ -170,7 +171,7 @@ public class GameWall : MonoBehaviour {
 			sectionThree = true;
 			transitSection = false;
 		}
-
+			*/
 
 		//Ends the game if greater or equal to max velocity
 		if (planeOne.getMaxVelocity () > speedOfSound) 
@@ -199,7 +200,6 @@ public class GameWall : MonoBehaviour {
 	{
 		if (sectionOne) {
 			stagePartIndex = (int)Random.Range (0, levelCapOne);
-			//stagePartIndex = 0;
 			levelDesignOne.transform.GetChild (stagePartIndex).gameObject.SetActive (true);
 			levelDesignOne.transform.GetChild (stagePartIndex).GetComponent<StageFormation> ().selectedPart = true;
 			updateStage = false;
@@ -220,9 +220,9 @@ public class GameWall : MonoBehaviour {
 
 		else if (sectionTwo) {
 
-			stagePartIndex = (int)Random.Range (1, levelCapTwo);
+			//stagePartIndex = (int)Random.Range (1, levelCapTwo);
 
-			//stagePartIndex = 0;
+			stagePartIndex = 8;
 			levelDesignTwo.transform.GetChild (stagePartIndex).gameObject.SetActive (true);
 			levelDesignTwo.transform.GetChild (stagePartIndex).GetComponent<StageFormation> ().selectedPart = true;
 			updateStage = false;
